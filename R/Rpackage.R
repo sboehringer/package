@@ -109,7 +109,6 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 		if (any(sapply(src, function(f)splitPath(f)$file) == Sprintf('%{name}s.R', o)))
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
 		# substitute in fields from configuration [description]
-browser();
 		doc0 = paste0(packageDocPrefix, join(doc, ''), "\n\"_PACKAGE\"\n");
 		doc1 = Sprintf(doc0, o$description, name = o$name);
 		doc2 = gsub("(^#)|((?<=\n)#)", "#'", doc1, perl = T);
