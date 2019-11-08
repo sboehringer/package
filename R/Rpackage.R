@@ -21,7 +21,8 @@ packageDefinition = list(
 );
 
 #__PACKAGE_DOC__
-#' This is package `package`.
+#' @details
+#' %{desciption}s
 #'
 #' This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone cofiguration file, providing full flexibility.
 #__PACKAGE_DOC_END__
@@ -107,7 +108,8 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 	if (Ndoc == 1) {
 		if (any(sapply(src, function(f)splitPath(f)$file) == Sprintf('%{name}s.R', o)))
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
-		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), join(doc, ''));
+		docProc = Sprintf(join(doc, ''), o);	# substitute in fields from configuration [description]
+		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), docProc);
 		o$files = c(Sprintf('%{name}s.R', o), o$files);	# documentation file to list of files
 	}
 	# <p> update NEWS file
