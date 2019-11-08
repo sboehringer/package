@@ -67,7 +67,7 @@ packageDescription = function(o, debug = F) {
 
 gitActions = function(o, packagesDir, debug) {
 	i = packageInterpolationDict(o, debug);
-	dir = with(o, Sprintf('%{packagesDir}s/%{name}s'));
+	dir = Sprintf('%{packagesDir}s/%{name}s', o);
 
 	readme = packageInterpolateVars(o, firstDef(o$git$readmeTemplate, packageReadmeTemplate));
 	writeFile(Sprintf('%{dir}s/README.md'), readme);
@@ -81,6 +81,11 @@ gitActions = function(o, packagesDir, debug) {
 	# tag new version
 	if (length(Regexpr(with(i, Sprintf('\\Q%{VERSION}s\\E')), tags)[[1]]) == 0) {
 		System(with(i, Sprintf('cd %{dir}q ; git tag %{VERSION}s')));
+	}
+	# remote
+	if (nif(o$git$remote)) {
+		remotes = System(Sprintf('cd %{dir}q ; git remote -v'), 2, return.output = T)$output;
+browser();
 	}
 }
 
