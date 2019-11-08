@@ -21,7 +21,8 @@ packageDefinition = list(
 );
 
 #__PACKAGE_DOC__
-# This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone cofiguration file, providing full flexibility.
+# This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone configuration file, providing full flexibility. It can also handle git interaction.
+# @seealso createPackage
 #__PACKAGE_DOC_END__
 
 packageDocPrefix = "# This is package `%{name}s`\n#\n# %{title}s\n#\n# @details\n# %{description}s\n\"_PACKAGE\"\n";
@@ -108,6 +109,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 		if (any(sapply(src, function(f)splitPath(f)$file) == Sprintf('%{name}s.R', o)))
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
 		# substitute in fields from configuration [description]
+browser();
 		docProc = Sprintf(paste0(packageDocPrefix, join(doc, '')), o$description, name = o$name);
 		docProc = gsub("(^#)|((?<=\n)#)", "#'", docProc, perl = T);
 		print(docProc);
