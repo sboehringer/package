@@ -1,3 +1,7 @@
+#' package
+#'
+#' Create packages from R-code directly
+#'
 #' @details
 #' NA
 #'

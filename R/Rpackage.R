@@ -21,6 +21,10 @@ packageDefinition = list(
 );
 
 #__PACKAGE_DOC__
+#' %{name}s
+#'
+#' %{title}s
+#'
 #' @details
 #' %{desciption}s
 #'
@@ -108,7 +112,8 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 	if (Ndoc == 1) {
 		if (any(sapply(src, function(f)splitPath(f)$file) == Sprintf('%{name}s.R', o)))
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
-		docProc = Sprintf(join(doc, ''), o);	# substitute in fields from configuration [description]
+		# substitute in fields from configuration [description]
+		docProc = Sprintf(join(doc, ''), o$description, name = o$name);
 		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), docProc);
 		o$files = c(Sprintf('%{name}s.R', o), o$files);	# documentation file to list of files
 	}
