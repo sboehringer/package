@@ -3,7 +3,7 @@
 \docType{data}
 \name{packageReadmeTemplate}
 \alias{packageReadmeTemplate}
-\title{%{name}s}
+\title{This is package `%{name}s`}
 \format{An object of class \code{character} of length 1.}
 \usage{
 packageReadmeTemplate

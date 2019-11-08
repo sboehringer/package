@@ -1,4 +1,4 @@
-#' package
+#' This is package `package`
 #'
 #' Create packages from R-code directly
 #'

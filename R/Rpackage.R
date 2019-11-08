@@ -21,7 +21,7 @@ packageDefinition = list(
 );
 
 #__PACKAGE_DOC__
-#' %{name}s
+#' This is package `%{name}s`
 #'
 #' %{title}s
 #'
