@@ -25,7 +25,7 @@ packageDefinition = list(
 #__PACKAGE_DOC_END__
 
 #packageDocPrefix = "# This is package `%{name}s`\n#\n# %{title}s\n#\n# @details\n# %{description}s\n#\n";
-packageDocPrefix = "# This is package `%{name}s`\n#\n# @details\n# %{description}s\n#\n";
+packageDocPrefix = "# This is package `%{name}s`\n#\n# @details\n# %{description}s\n#\n\"_PACKAGE\"\n";
 packageReadmeTemplate = "# R-package `%{PACKAGE_NAME}s`, version %{VERSION}s\n%{README}s\n# Description\n%{DESCRIPTION}s";
 
 packageDescTemplate = "Package: %{PACKAGE_NAME}s\nType: %{TYPE}s\nTitle: %{TITLE}s\nVersion: %{VERSION}s\nDate: %{DATE}s\nAuthor: %{AUTHOR}s\nMaintainer: %{MAINTAINER}s\nDescription: %{DESCRIPTION}s\nLicense: %{LICENSE}s\nEncoding: %{ENCODING}s\nDepends: %{DEPENDS}s\nCollate: %{COLLATE}s\nSuggests: %{SUGGESTS}s\n";
