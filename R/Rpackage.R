@@ -12,7 +12,7 @@ packageDefinition = list(
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages.',
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
-		news = "0.1-0	Initial release"
+		news = "0.2-0	Alpha version\n0.1-0	Initial release"
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
@@ -86,7 +86,6 @@ gitActions = function(o, packagesDir, debug) {
 		newVersion = T;
 	}
 	# remote
-browser();
 	if (notE(o$git$remote)) {
 		remotes = System(Sprintf('cd %{pdir}q ; git remote -v'), 2, return.output = T)$output;
 		if (remotes == '' && o$git$remote != '')
