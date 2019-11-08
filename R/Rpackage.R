@@ -17,6 +17,7 @@ packageDefinition = list(
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
 		push = F,
+		pushOnNewVersion = T,
 		remote = 'https://github.com/sboehringer/package.git'
 	)
 );
@@ -67,26 +68,30 @@ packageDescription = function(o, debug = F) {
 
 gitActions = function(o, packagesDir, debug) {
 	i = packageInterpolationDict(o, debug);
-	dir = Sprintf('%{packagesDir}s/%{name}s', o);
+	pdir = Sprintf('%{packagesDir}s/%{name}s', o);
 
 	readme = packageInterpolateVars(o, firstDef(o$git$readmeTemplate, packageReadmeTemplate));
-	writeFile(Sprintf('%{dir}s/README.md'), readme);
+	writeFile(Sprintf('%{pdir}s/README.md'), readme);
 	# initialize git
 	if (!file.exists(with(o, Sprintf('%{packagesDir}s/%{name}s/.git')))) {
-		System(Sprintf('cd %{dir}q ; git init'), 2);
+		System(Sprintf('cd %{pdir}q ; git init'), 2);
 	}
-	System(Sprintf('cd %{dir}q ; git add --all'), 2);
-	System(with(i, Sprintf('cd %{dir}q ; git commit -a -m "Commit for onward development of version %{VERSION}s"')), 2);
-	tags = System(Sprintf('cd %{dir}q ; git tag'), 2, return.output = T)$output;
+	System(Sprintf('cd %{pdir}q ; git add --all'), 2);
+	System(with(i, Sprintf('cd %{pdir}q ; git commit -a -m "Commit for onward development of version %{VERSION}s"')), 2);
+	tags = System(Sprintf('cd %{pdir}q ; git tag'), 2, return.output = T)$output;
 	# tag new version
+	newVersion = F;
 	if (length(Regexpr(with(i, Sprintf('\\Q%{VERSION}s\\E')), tags)[[1]]) == 0) {
-		System(with(i, Sprintf('cd %{dir}q ; git tag %{VERSION}s')));
+		System(with(i, Sprintf('cd %{pdir}q ; git tag %{VERSION}s')));
+		newVersion = T;
 	}
 	# remote
 	if (Nif(o$git$remote)) {
-		remotes = System(Sprintf('cd %{dir}q ; git remote -v'), 2, return.output = T)$output;
+		remotes = System(Sprintf('cd %{pdir}q ; git remote -v'), 2, return.output = T)$output;
 		if (remotes == '' && o$git$remote != '')
-			System(Sprintf('cd %{dir}q ; git remote add origin %{remote}s', o$git), 2);
+			System(Sprintf('cd %{pdir}q ; git remote add origin %{remote}s', o$git), 2);
+		if (o$git$pushOnNewVersion && newVersion || o$git$push)
+			System(Sprintf('cd %{pdir}q ; git push -u origin master'), 2);
 	}
 }
 
