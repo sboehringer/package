@@ -83,7 +83,7 @@ gitActions = function(o, packagesDir, debug) {
 		System(with(i, Sprintf('cd %{dir}q ; git tag %{VERSION}s')));
 	}
 	# remote
-	if (nif(o$git$remote)) {
+	if (Nif(o$git$remote)) {
 		remotes = System(Sprintf('cd %{dir}q ; git remote -v'), 2, return.output = T)$output;
 browser();
 	}
