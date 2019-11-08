@@ -86,6 +86,7 @@ gitActions = function(o, packagesDir, debug) {
 		newVersion = T;
 	}
 	# remote
+browser();
 	if (notE(o$git$remote)) {
 		remotes = System(Sprintf('cd %{pdir}q ; git remote -v'), 2, return.output = T)$output;
 		if (remotes == '' && o$git$remote != '')
