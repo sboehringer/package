@@ -25,8 +25,8 @@ packageDefinition = list(
 # @seealso %%%% createPackage
 #__PACKAGE_DOC_END__
 
-packageDocPrefix = "# This is package `%{name}s`\n#\n# %{title}s\n#\n# @details\n# %{description}s\n\"_PACKAGE\"\n";
-#packageDocPrefix = "# This is package `%{name}s`\n#\n# @details\n# %{description}s\n#\n\"_PACKAGE\"\n";
+packageDocPrefix = "# This is package `%{name}s`\n#\n# %{title}s\n#\n# @details\n# %{description}s\n";
+#packageDocPrefix = "# This is package `%{name}s`\n#\n# @details\n# %{description}s\n#\n";
 packageReadmeTemplate = "# R-package `%{PACKAGE_NAME}s`, version %{VERSION}s\n%{README}s\n# Description\n%{DESCRIPTION}s";
 
 packageDescTemplate = "Package: %{PACKAGE_NAME}s\nType: %{TYPE}s\nTitle: %{TITLE}s\nVersion: %{VERSION}s\nDate: %{DATE}s\nAuthor: %{AUTHOR}s\nMaintainer: %{MAINTAINER}s\nDescription: %{DESCRIPTION}s\nLicense: %{LICENSE}s\nEncoding: %{ENCODING}s\nDepends: %{DEPENDS}s\nCollate: %{COLLATE}s\nSuggests: %{SUGGESTS}s\n";
@@ -110,7 +110,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
 		# substitute in fields from configuration [description]
 browser();
-		doc0 = paste0(packageDocPrefix, join(doc, ''));
+		doc0 = paste0(packageDocPrefix, join(doc, ''), "\n\"_PACKAGE\"\n");
 		doc1 = Sprintf(doc0, o$description, name = o$name);
 		doc2 = gsub("(^#)|((?<=\n)#)", "#'", doc1, perl = T);
 		print(doc2);
