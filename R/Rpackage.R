@@ -21,16 +21,10 @@ packageDefinition = list(
 );
 
 #__PACKAGE_DOC__
-#' This is package `%{name}s`
-#'
-#' %{title}s
-#'
-#' @details
-#' %{description}s
-#'
-#' This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone cofiguration file, providing full flexibility.
+# This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone cofiguration file, providing full flexibility.
 #__PACKAGE_DOC_END__
 
+packageDocPrefix = "# This is package `%{name}s`\n#\n# %{title}s\n#\n# @details\n# %{description}s\n#\n";
 packageReadmeTemplate = "# R-package `%{PACKAGE_NAME}s`, version %{VERSION}s\n%{README}s\n# Description\n%{DESCRIPTION}s";
 
 packageDescTemplate = "Package: %{PACKAGE_NAME}s\nType: %{TYPE}s\nTitle: %{TITLE}s\nVersion: %{VERSION}s\nDate: %{DATE}s\nAuthor: %{AUTHOR}s\nMaintainer: %{MAINTAINER}s\nDescription: %{DESCRIPTION}s\nLicense: %{LICENSE}s\nEncoding: %{ENCODING}s\nDepends: %{DEPENDS}s\nCollate: %{COLLATE}s\nSuggests: %{SUGGESTS}s\n";
@@ -113,7 +107,8 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 		if (any(sapply(src, function(f)splitPath(f)$file) == Sprintf('%{name}s.R', o)))
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
 		# substitute in fields from configuration [description]
-		docProc = Sprintf(join(doc, ''), o$description, name = o$name);
+		docProc = Sprintf(paste0(packageDocPrefix, join(doc, '')), o$description, name = o$name);
+		docProc = gsub("(^#)|((?<=\n)#)", "#'", docProc, perl = T);
 		print(docProc);
 		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), docProc);
 		o$files = c(Sprintf('%{name}s.R', o), o$files);	# documentation file to list of files
