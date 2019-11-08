@@ -114,6 +114,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
 		# substitute in fields from configuration [description]
 		docProc = Sprintf(join(doc, ''), o$description, name = o$name);
+browser();
 		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), docProc);
 		o$files = c(Sprintf('%{name}s.R', o), o$files);	# documentation file to list of files
 	}
