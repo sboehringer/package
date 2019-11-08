@@ -24,8 +24,8 @@ packageDefinition = list(
 # This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone cofiguration file, providing full flexibility.
 #__PACKAGE_DOC_END__
 
-#packageDocPrefix = "# This is package `%{name}s`\n#\n# %{title}s\n#\n# @details\n# %{description}s\n#\n";
-packageDocPrefix = "# This is package `%{name}s`\n#\n# @details\n# %{description}s\n#\n\"_PACKAGE\"\n";
+packageDocPrefix = "# This is package `%{name}s`\n#\n# %{title}s\n#\n# @details\n# %{description}s\n\"_PACKAGE\"\n";
+#packageDocPrefix = "# This is package `%{name}s`\n#\n# @details\n# %{description}s\n#\n\"_PACKAGE\"\n";
 packageReadmeTemplate = "# R-package `%{PACKAGE_NAME}s`, version %{VERSION}s\n%{README}s\n# Description\n%{DESCRIPTION}s";
 
 packageDescTemplate = "Package: %{PACKAGE_NAME}s\nType: %{TYPE}s\nTitle: %{TITLE}s\nVersion: %{VERSION}s\nDate: %{DATE}s\nAuthor: %{AUTHOR}s\nMaintainer: %{MAINTAINER}s\nDescription: %{DESCRIPTION}s\nLicense: %{LICENSE}s\nEncoding: %{ENCODING}s\nDepends: %{DEPENDS}s\nCollate: %{COLLATE}s\nSuggests: %{SUGGESTS}s\n";

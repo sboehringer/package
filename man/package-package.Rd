@@ -6,7 +6,7 @@
 \alias{package-package}
 \title{This is package `package`}
 \description{
-This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages.
+Create packages from R-code directly
 }
 \details{
 This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages.
