@@ -85,7 +85,8 @@ gitActions = function(o, packagesDir, debug) {
 	# remote
 	if (Nif(o$git$remote)) {
 		remotes = System(Sprintf('cd %{dir}q ; git remote -v'), 2, return.output = T)$output;
-browser();
+		if (remotes == '' && o$git$remote != '')
+			System(Sprintf('cd %{dir}q ; git remote add origin %{remote}s', o$git), 2);
 	}
 }
 
