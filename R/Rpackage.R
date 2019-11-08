@@ -110,10 +110,11 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
 		# substitute in fields from configuration [description]
 browser();
-		docProc = Sprintf(paste0(packageDocPrefix, join(doc, '')), o$description, name = o$name);
-		docProc = gsub("(^#)|((?<=\n)#)", "#'", docProc, perl = T);
-		print(docProc);
-		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), docProc);
+		doc0 = paste0(packageDocPrefix, join(doc, ''));
+		doc1 = Sprintf(doc0, o$description, name = o$name);
+		doc2 = gsub("(^#)|((?<=\n)#)", "#'", doc1, perl = T);
+		print(doc2);
+		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), doc2);
 		o$files = c(Sprintf('%{name}s.R', o), o$files);	# documentation file to list of files
 	}
 	# <p> update NEWS file
