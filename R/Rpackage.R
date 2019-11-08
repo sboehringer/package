@@ -106,6 +106,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 		if (any(sapply(src, function(f)splitPath(f)$file) == Sprintf('%{name}s.R', o)))
 			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
 		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), join(doc, ''));
+		o$files = c(Sprintf('%{name}s.R', o), o$files);	# documentation file to list of files
 	}
 	# <p> update NEWS file
 	writeFile(with(o, Sprintf('%{pdir}s/NEWS')), firstDef(o$news, '0.1-0	Initial release'));

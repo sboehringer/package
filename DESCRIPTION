@@ -12,6 +12,7 @@ Depends:
     roxygen2,
     devtools
 Collate: 
+    package.R
     Rpackage.R
 Suggests: 
     jsonlite,
