@@ -16,7 +16,8 @@ packageDefinition = list(
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
-		push = F
+		push = F,
+		remote = 'https://github.com/sboehringer/package.git'
 	)
 );
 
