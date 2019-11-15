@@ -13,7 +13,7 @@ packageDefinition = list(
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
 		news = "0.2-0	Alpha version\n0.1-0	Initial release",
-		files = c('Rdata.R', 'Rsystem.R')
+		files = c('Rmeta.R', 'Rdata.R', 'Rsystem.R')
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
@@ -186,5 +186,6 @@ probeDefinition = function(desc, dir = NULL) {
 #' @export createPackage
 createPackage = function(packageDesc, packagesDir = '~/src/Rpackages', dir = NULL, doInstall = FALSE) {
 	packageDef = probeDefinition(packageDesc, dir);
+print(packageDef);
 	return(createPackageWithConfig(packageDef, packagesDir, doInstall));
 }
