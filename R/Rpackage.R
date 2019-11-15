@@ -67,11 +67,12 @@ packageDescription = function(o, debug = F) {
 	return(packageInterpolateVars(o, templ, debug));
 }
 
-gitOptionsDefault = list(doPush = F);
+gitOptionsDefault = list(doPull = F, doPush = F);
 gitActions = function(o, packagesDir, debug, gitOptions = gitOptionsDefault) {
 	gitOptions = merge.lists(gitOptionsDefault, gitOptions);
 	i = packageInterpolationDict(o, debug);
 	pdir = Sprintf('%{packagesDir}s/%{name}s', o);
+	if (gitOptions$doPull) System(Sprintf('cd %{pdir}q ; git pull'), 2);
 
 	readme = packageInterpolateVars(o, firstDef(o$git$readmeTemplate, packageReadmeTemplate));
 	writeFile(Sprintf('%{pdir}s/README.md'), readme);
