@@ -12,7 +12,7 @@ packageDefinition = list(
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages.',
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
-		news = "0.2-0	Alpha version\n0.1-0	Initial release",
+		news = "0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
 		files = c('Rmeta.R', 'Rdata.R', 'Rsystem.R')
 	),
 	git = list(
