@@ -5,7 +5,7 @@ Version: 0.3-0
 Date: 15-11-2019
 Author: Stefan Böhringer <r-packages@s-boehringer.org>
 Maintainer: Stefan Böhringer <r-packages@s-boehringer.org>
-Description: This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages.
+Description: This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `help(package = 'package')` for a tutorial.
 License: LGPL
 Encoding: UTF-8
 Depends: 
