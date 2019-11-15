@@ -85,7 +85,7 @@ gitActions = function(o, packagesDir, debug, gitOptions = gitOptionsDefault) {
 	tags = System(Sprintf('cd %{pdir}q ; git tag'), 2, return.output = T)$output;
 	# tag new version
 	newVersion = F;
-	if (length(Regexpr(with(i, Sprintf('\\Q%{VERSION}s\\E')), tags)[[1]]) == 0) {
+	if (length(Regexpr(Sprintf('\\Q%{VERSION}s\\E', i), tags)[[1]]) == 0) {
 		System(with(i, Sprintf('cd %{pdir}q ; git tag %{VERSION}s')));
 		newVersion = T;
 	}
@@ -94,9 +94,8 @@ gitActions = function(o, packagesDir, debug, gitOptions = gitOptionsDefault) {
 		remotes = System(Sprintf('cd %{pdir}q ; git remote -v'), 2, return.output = T)$output;
 		if (remotes == '' && o$git$remote != '')
 			System(Sprintf('cd %{pdir}q ; git remote add origin %{remote}s', o$git), 2);
-browser();
 		if (o$git$pushOnNewVersion && newVersion || gitOptions$doPush)
-			System(Sprintf('cd %{pdir}q ; git push -u origin master ; git push origin %{VERSION}s', tags), 2);
+			System(Sprintf('cd %{pdir}q ; git push -u origin master ; git push origin %{VERSION}s', i), 2);
 	}
 }
 
