@@ -5,7 +5,7 @@
 \title{Create package from vector of source files and single configuration}
 \usage{
 createPackage(packageDesc, packagesDir = "~/src/Rpackages", dir = NULL,
-  doInstall = FALSE)
+  doInstall = FALSE, gitOptions = list())
 }
 \arguments{
 \item{packageDesc}{path to the configuration file (R, extended plist format)}

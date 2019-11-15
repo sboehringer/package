@@ -67,7 +67,9 @@ packageDescription = function(o, debug = F) {
 	return(packageInterpolateVars(o, templ, debug));
 }
 
-gitActions = function(o, packagesDir, debug) {
+gitOptionsDefault = list(doPush = F);
+gitActions = function(o, packagesDir, debug, gitOptions = gitOptionsDefault) {
+	gitOptions = merge.lists(gitOptionsDefault, gitOptions);
 	i = packageInterpolationDict(o, debug);
 	pdir = Sprintf('%{packagesDir}s/%{name}s', o);
 
@@ -91,12 +93,13 @@ gitActions = function(o, packagesDir, debug) {
 		remotes = System(Sprintf('cd %{pdir}q ; git remote -v'), 2, return.output = T)$output;
 		if (remotes == '' && o$git$remote != '')
 			System(Sprintf('cd %{pdir}q ; git remote add origin %{remote}s', o$git), 2);
-		if (o$git$pushOnNewVersion && newVersion || o$git$push)
-			System(Sprintf('cd %{pdir}q ; git push -u origin master'), 2);
+		if (o$git$pushOnNewVersion && newVersion || gitOptions$doPush)
+			System(Sprintf('cd %{pdir}q ; git push -u origin master ; git push origin %{VERSION}s'), 2);
 	}
 }
 
-createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall = FALSE, debug = F) {
+createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
+	doInstall = FALSE, debug = F, gitOptions = list()) {
 	if (debug) print(o);
 
 	i = packageInterpolationDict(o, debug);
@@ -139,7 +142,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages', doInstall
 	document(packageDir);
 
 	# <p> git
-	if (notE(o$git)) gitActions(o, packagesDir, debug);
+	if (notE(o$git)) gitActions(o, packagesDir, debug, gitOptions);
 
 	# <p> install
 	if (doInstall) Install_local(Sprintf('%{packageDir}s'), upgrade = 'never');
@@ -184,8 +187,9 @@ probeDefinition = function(desc, dir = NULL) {
 #' myLittlePony()
 #'
 #' @export createPackage
-createPackage = function(packageDesc, packagesDir = '~/src/Rpackages', dir = NULL, doInstall = FALSE) {
+createPackage = function(packageDesc, packagesDir = '~/src/Rpackages',
+	dir = NULL, doInstall = FALSE, gitOptions = list()) {
 	packageDef = probeDefinition(packageDesc, dir);
 	#print(packageDef);
-	return(createPackageWithConfig(packageDef, packagesDir, doInstall));
+	return(createPackageWithConfig(packageDef, packagesDir, doInstall, gitOptions = gitOptions));
 }
