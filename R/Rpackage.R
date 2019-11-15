@@ -94,8 +94,9 @@ gitActions = function(o, packagesDir, debug, gitOptions = gitOptionsDefault) {
 		remotes = System(Sprintf('cd %{pdir}q ; git remote -v'), 2, return.output = T)$output;
 		if (remotes == '' && o$git$remote != '')
 			System(Sprintf('cd %{pdir}q ; git remote add origin %{remote}s', o$git), 2);
+browser();
 		if (o$git$pushOnNewVersion && newVersion || gitOptions$doPush)
-			System(Sprintf('cd %{pdir}q ; git push -u origin master ; git push origin %{VERSION}s'), 2);
+			System(Sprintf('cd %{pdir}q ; git push -u origin master ; git push origin %{VERSION}s', tags), 2);
 	}
 }
 
