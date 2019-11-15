@@ -186,6 +186,6 @@ probeDefinition = function(desc, dir = NULL) {
 #' @export createPackage
 createPackage = function(packageDesc, packagesDir = '~/src/Rpackages', dir = NULL, doInstall = FALSE) {
 	packageDef = probeDefinition(packageDesc, dir);
-print(packageDef);
+	#print(packageDef);
 	return(createPackageWithConfig(packageDef, packagesDir, doInstall));
 }
