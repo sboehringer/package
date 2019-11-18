@@ -9,7 +9,7 @@ packageDefinition = list(
 		# version to be documented in news section
 		#version = '0.1-0',
 		author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
-		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `help(package = \'package\')` for a tutorial.',
+		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
 		news = "0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
@@ -24,7 +24,7 @@ packageDefinition = list(
 );
 
 #__PACKAGE_DOC__
-# This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone configuration file, providing full flexibility. It can also handle git interaction.
+# This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone configuration file, providing full flexibility. It can also handle git interaction. This package is created with itself and you can look at the single R-file `Rpackage.R` for a detailed example.
 #
 # @seealso {createPackage()} for starting the main workflow
 #__PACKAGE_DOC_END__
@@ -122,10 +122,10 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	);
 	# conflicts
 	Ndoc = length(which(sapply(doc, nchar) > 0));
-	if (Ndoc > 1) stop('More than one pacakge documentation found');
+	if (Ndoc > 1) stop('More than one package documentation files/sections found');
 	if (Ndoc == 1) {
 		if (any(sapply(src, function(f)splitPath(f)$file) == Sprintf('%{name}s.R', o)))
-			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten.', o));
+			stop(Sprintf('%{name}s.R should contain package documentation which is also given elsewhere. %{name}s.R will be overwritten so that it cannot be used as an input file.', o));
 		# substitute in fields from configuration [description]
 		doc0 = paste0(packageDocPrefix, join(doc, ''), "\n\"_PACKAGE\"\n");
 		doc1 = Sprintf(doc0, o$description, name = o$name);
