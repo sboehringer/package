@@ -13,6 +13,9 @@ Depends:
     devtools
 Collate: 
     package.R
+    Rmeta.R
+    Rdata.R
+    Rsystem.R
     Rpackage.R
 Suggests: 
     jsonlite,
