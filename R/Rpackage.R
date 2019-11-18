@@ -13,7 +13,7 @@ packageDefinition = list(
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
-		news = "0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release"
+		news = "0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release"
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
@@ -157,7 +157,10 @@ probeDefinition = function(desc, dir = NULL) {
 	sp = splitPath(path);
 	o = switch(sp$ext,
 		# <!> assume unique is stable
-		R = ({ Source(desc); def = get('packageDefinition');
+		R = ({
+			myEnv = new.env();
+			Source(desc, local = myEnv);
+			def = get('packageDefinition', envir = myEnv);
 			def$files = unique(c(def$files, desc)); def }),
 		plist = propertyFromStringExt(readFile(path)),
 		json = ({ Library('jsonlite'); read_json(path) }),

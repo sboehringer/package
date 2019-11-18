@@ -19,9 +19,6 @@ prefixes.}
 \description{
 Read content of file and return as character object.
 }
-\details{
-Read content of file and return as character object.
-}
 \examples{
 
   parallel8 = function(e) log(1:e) \%*\% log(1:e);

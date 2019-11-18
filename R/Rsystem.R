@@ -784,10 +784,6 @@ file.locate = function(path, prefixes = NULL, normalize = T, as.dirs = T, force 
 
 #' Read content of file and return as character object.
 #' 
-#' Read content of file and return as character object.
-#' 
-#' Read content of file and return as character object.
-#' 
 #' @param path Path to the file to be read.
 #' @param prefixes Search for file by prepending character strings from
 #' prefixes.
