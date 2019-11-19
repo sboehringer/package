@@ -141,7 +141,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 
 	# <p> roxigen2
 	Library('devtools');
-	document(packageDir);
+	document(packageDir, roclets = 'namespace');
 
 	# <p> git
 	if (notE(o$git)) gitActions(o, packagesDir, debug, gitOptions);
