@@ -140,9 +140,10 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	writeFile(with(o, Sprintf('%{pdir}s/DESCRIPTION')), packageDescription(o));
 
 	# <p> roxigen2
-	Library('devtools');
+	Library(c('roxygen2', 'devtools'));
 	#document(packageDir, roclets = c('namespace', 'rd'));
-	document(packageDir, roclets = c('collate', 'namespace', 'rd'), clean = T);
+	#document(packageDir, roclets = c('collate', 'namespace', 'rd'), clean = T);
+	roxygenize(packageDir, roclets = c('namespace', 'rd'), clean = TRUE);
 
 	# <p> git
 	if (notE(o$git)) gitActions(o, packagesDir, debug, gitOptions);
