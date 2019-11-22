@@ -14,8 +14,10 @@ This package allows you to create a fully-fledged R-package from a single R-file
 The package contains a self-contained package `pkg-minimal.R` which can be inspected and installed as in the example below.
 }
 \examples{
+\dontrun{
  file.show(system.file('Rscripts/pkg-minimal.R', package = 'package'))
-
+ createPackage(system.file('Rscripts/pkg-minimal.R', package = 'package'))
+}
 }
 \seealso{
 {createPackage()} for starting the main workflow
