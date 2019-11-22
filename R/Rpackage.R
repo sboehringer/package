@@ -121,6 +121,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	# <p> copy files for inst sub-folder
 	nelapply(o$instFiles, function(n, files) {
 		dest = Sprintf('%{packageDir}s/inst/%{n}s');
+		Dir.create(dest, recursive = T);
 		LogS(2, 'Copying files: %{f}s -> %{dest}s', f = join(src, ', '));
 		File.copy(files, dest, symbolicLinkIfLocal = F, overwrite = T);
 	});
