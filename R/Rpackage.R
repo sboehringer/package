@@ -5,6 +5,7 @@
 packageDefinition = list(
 	name = 'package',
 	files = c('Rmeta.R', 'Rdata.R', 'Rsystem.R'),
+	instFiles = list(Rscripts = 'Dev/pkg-minimal.R'),
 	description = list(
 		title = 'Create packages from R-code directly',
 		# version to be documented in news section
@@ -13,8 +14,7 @@ packageDefinition = list(
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
-		news = "0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
-		instFiles = list(Rscripts = 'Dev/pkg-minimal.R')
+		news = "0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release"
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
