@@ -1,4 +1,4 @@
-# R-package `package`, version 0.3-1
+# R-package `package`, version 0.4-0
 ## Installation
 ```{r}
 library(devtools);
