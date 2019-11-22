@@ -118,7 +118,8 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 
 	# <p> copy R files
 	#src = Sprintf('%{dir}s/%{files}s', dir = o$dir, files = o$files, sprintf_cartesian = T);
-	src = Sprintf('%{dir}s/%{files}s', o, sprintf_cartesian = T);
+	#src = Sprintf('%{dir}s/%{files}s', o, sprintf_cartesian = T);
+	src = sapply(o$files, function(f)if (splitPath(f)$isAbsolute) f else Sprintf('%{dir}s/%{f}s', o));
 	dest = Sprintf('%{packageDir}s/R/');
 	LogS(2, 'Copying files: %{f}s -> %{dest}s', f = join(src, ', '));
 	File.copy(src, dest, symbolicLinkIfLocal = F, overwrite = T);
