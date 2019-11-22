@@ -15,7 +15,7 @@ packageDefinition = list(
 		description = 'This appears in the package-documentaion, the markdown of the git-repository and in th e package details. This package exports a single function, \\code{myLittlePony}, which prints a surprising message.',
 		depends = c(),
 		suggests = c(),
-		license = LGPL;
+		license = 'LGPL';
 		news = "0.1-0	Initial release"
 	),
 	git = list(
