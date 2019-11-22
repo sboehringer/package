@@ -13,7 +13,8 @@ packageDefinition = list(
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
-		news = "0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release"
+		news = "0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
+		instFiles = list(Rscripts = 'Dev/pkg-minimal.R')
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
@@ -116,6 +117,13 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	dest = Sprintf('%{packageDir}s/R/');
 	LogS(2, 'Copying files: %{f}s -> %{dest}s', f = join(src, ', '));
 	File.copy(src, dest, symbolicLinkIfLocal = F, overwrite = T);
+
+	# <p> copy files for inst sub-folder
+	nelapply(o$instFiles, function(n, files) {
+		dest = Sprintf('%{packageDir}s/inst/%{n}s');
+		LogS(2, 'Copying files: %{f}s -> %{dest}s', f = join(src, ', '));
+		File.copy(files, dest, symbolicLinkIfLocal = F, overwrite = T);
+	});
 	# <p> extract package documentation
 	doc = sapply(src, function(f)
 		Regexpr('(?s)(?<=#__PACKAGE_DOC__\\n).*?(?=#__PACKAGE_DOC_END__\\n)', readFile(f))
