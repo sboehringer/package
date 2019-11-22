@@ -55,7 +55,7 @@ packageInterpolationDict = function(o, debug = F) {
 		DESCRIPTION = firstDef(d$description, ''),
 		LICENSE = firstDef(d$license, 'LGPL'),
 		ENCODING = firstDef(d$encoding, 'UTF-8'),
-		COLLATE = circumfix(join(o$files, "\n    "), pre = "\n    "),
+		COLLATE = circumfix(join(sapply(o$files, function(f)splitPath(f)$file), "\n    "), pre = "\n    "),
 		DEPENDS = circumfix(join(d$depends, ",\n    "), pre = "\n    "),
 		SUGGESTS = circumfix(join(d$suggests, ",\n    "), pre = "\n    "),
 		README = firstDef(o$git$readme, '')
@@ -112,6 +112,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	i = packageInterpolationDict(o, debug);
 	pdir = Sprintf('%{packagesDir}s/%{name}s', o);
 	packageDir = Sprintf('%{packagesDir}s/%{name}s', o);
+
 	# <p> folders
 	Dir.create(Sprintf('%{pdir}s'));
 	Dir.create(Sprintf('%{pdir}s/R'));
@@ -131,6 +132,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 		LogS(2, 'Copying files: %{f}s -> %{dest}s', f = join(src, ', '));
 		File.copy(files, dest, symbolicLinkIfLocal = F, overwrite = T);
 	});
+
 	# <p> extract package documentation
 	doc = sapply(src, function(f)
 		Regexpr('(?s)(?<=#__PACKAGE_DOC__\\n).*?(?=#__PACKAGE_DOC_END__\\n)', readFile(f))
@@ -150,6 +152,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), doc2);
 		o$files = c(Sprintf('%{name}s.R', o), o$files);	# documentation file to list of files
 	}
+
 	# <p> update NEWS file
 	writeFile(with(o, Sprintf('%{pdir}s/NEWS')), firstDef(o$news, '0.1-0	Initial release'));
 	writeFile(with(o, Sprintf('%{pdir}s/DESCRIPTION')), packageDescription(o));

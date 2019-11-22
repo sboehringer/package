@@ -8,7 +8,7 @@ packageDefinition = list(
 	files = c(),
 	instFiles = list(),
 	description = list(
-		title = 'Create packages from R-code directly',
+		title = 'Minimal R-package created with `package`',
 		# version to be documented in news section
 		#version = '0.1-0',
 		author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
