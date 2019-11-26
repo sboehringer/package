@@ -8,7 +8,7 @@ createPackage(packageDesc, packagesDir = "~/src/Rpackages", dir = NULL,
   doInstall = FALSE, gitOptions = list())
 }
 \arguments{
-\item{packageDesc}{path to the configuration file (R, extended plist format, json, yaml)
+\item{packageDesc}{path to the configuration file (R, extended plist format, json, yaml).
 If an R-file is provided, it is sourced in a seperate environment and needs to define the variable
 `packageDefinition`. This variable has to be a list which is further specified in the details below.
 If a propertyList/JSON/YAML-file is provided, they have to parse into a list corresponding to
@@ -21,6 +21,15 @@ used for parsing, coming from packages \code{package}, \code{jsonlite}, and \cod
 }
 \description{
 This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.
+}
+\details{
+The package is specified through a list coming from an R script or configuration file.
+The following elements control package generation.
+\itemize{
+	\item{name}{The name of the pacakge}
+	\item{files}{R-files to be put into the package. If an R-file is used for the configuration,
+		it will automatically be include. This allows package definition through a single R-file.}
+}
 }
 \examples{
 

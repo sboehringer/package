@@ -195,7 +195,7 @@ probeDefinition = function(desc, dir = NULL) {
 #' This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.
 #' 
 #' @alias createPackageWithConfig
-#' @param packageDesc path to the configuration file (R, extended plist format, json, yaml)
+#' @param packageDesc path to the configuration file (R, extended plist format, json, yaml).
 #'	If an R-file is provided, it is sourced in a seperate environment and needs to define the variable
 #'	`packageDefinition`. This variable has to be a list which is further specified in the details below.
 #'	If a propertyList/JSON/YAML-file is provided, they have to parse into a list corresponding to
@@ -210,6 +210,13 @@ probeDefinition = function(desc, dir = NULL) {
 #' f1 = function(){42}; parallelize(f0); parallelize(f1);}
 #' \item Be extra prepared
 #' }
+#' @details The package is specified through a list coming from an R script or configuration file.
+#'	The following elements control package generation.
+#'	\itemize{
+#'		\item{name}{The name of the pacakge}
+#'		\item{files}{R-files to be put into the package. If an R-file is used for the configuration,
+#'			it will automatically be include. This allows package definition through a single R-file.}
+#'	}
 #' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
 #' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
 #' @keywords ~kwd1 ~kwd2
