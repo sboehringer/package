@@ -213,9 +213,12 @@ probeDefinition = function(desc, dir = NULL) {
 #' @details The package is specified through a list coming from an R script or configuration file.
 #'	The following elements control package generation.
 #'	\itemize{
-#'		\item{name}{The name of the pacakge}
-#'		\item{files}{R-files to be put into the package. If an R-file is used for the configuration,
+#'		\item{name: }{The name of the pacakge}
+#'		\item{files: }{R-files to be put into the package. If an R-file is used for the configuration,
 #'			it will automatically be include. This allows package definition through a single R-file.}
+#'		\item{instFiles: }{Other files to be installed. This is a list, the names of which specify
+#'			sub-folders in the \code{inst} sub-directory of the package. Values are character vectors
+#'			specifying files to be put there.}
 #'	}
 #' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
 #' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
