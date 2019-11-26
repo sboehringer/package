@@ -196,7 +196,11 @@ probeDefinition = function(desc, dir = NULL) {
 #' 
 #' @alias createPackageWithConfig
 #' @param packageDesc path to the configuration file (R, extended plist format, json, yaml)
-#'	If the 
+#'	If an R-file is provided, it is sourced in a seperate environment and needs to define the variable
+#'	`packageDefinition`. This variable has to be a list which is further specified in the details below.
+#'	If a propertyList/JSON/YAML-file is provided, they have to parse into a list corresponding to
+#'	`packageDefinition`. Functions \code{propertyFromStringExt}, \code{read_json}, and \code{read_yaml} are
+#'	used for parsing, coming from packages \code{package}, \code{jsonlite}, and \code{yaml}.
 #' @param packageDir folder in which the folder structure of the package is written
 #' @param doInstall flag to indicate whether the package should also be installed
 #' @section This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.
