@@ -222,7 +222,9 @@ probeDefinition = function(desc, dir = NULL) {
 #'		\item{description: }{A sub-list with elements specifying the \code{DESCRIPTION} file of the package.
 #'			The following items describe these elements as \code{description-name}, where \code{name} is the
 #'			name of the element in \code{description}.}
-#'		\item{git: }{A sub-list specifying git behavior, documented as \code{git-name}.}
+#'		\item{git: }{A sub-list specifying git behavior, documented as \code{git-name}. If you do not
+#'			want to use git, omit this entry from \code{packageDefinition}. If present, a git repository
+#'			is created and maintained in the target folder.}
 #'		\item{git-push: }{Logical, whether to push each commit, defaults to \code{FALSE}.
 #'			A push is automatically performed, once a new release is created, irrespective of this setting.
 #'			To suppress a push in these cases, push has to set to \code{FALSE} in the \code{gitOptions}
