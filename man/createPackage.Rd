@@ -8,7 +8,8 @@ createPackage(packageDesc, packagesDir = "~/src/Rpackages", dir = NULL,
   doInstall = FALSE, gitOptions = list())
 }
 \arguments{
-\item{packageDesc}{path to the configuration file (R, extended plist format)}
+\item{packageDesc}{path to the configuration file (R, extended plist format, json, yaml)
+If the}
 
 \item{doInstall}{flag to indicate whether the package should also be installed}
 

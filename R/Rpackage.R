@@ -26,7 +26,7 @@ packageDefinition = list(
 
 #__PACKAGE_DOC__
 # This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone configuration file, providing full flexibility. It can also handle git interaction. This package is created with itself and you can look at the single R-file `Rpackage.R` for a self-referring example.
-# The package contains a self-contained package \code{pkg-minimal.R} which can be inspected and installed as in the example below.
+# The package contains a self-contained package example defined in the single R-file \code{pkg-minimal.R} which can be inspected and installed as in the example below.
 # @examples
 # \dontrun{
 #  file.show(system.file('Rscripts/pkg-minimal.R', package = 'package'))
@@ -195,7 +195,8 @@ probeDefinition = function(desc, dir = NULL) {
 #' This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.
 #' 
 #' @alias createPackageWithConfig
-#' @param packageDesc path to the configuration file (R, extended plist format)
+#' @param packageDesc path to the configuration file (R, extended plist format, json, yaml)
+#'	If the 
 #' @param packageDir folder in which the folder structure of the package is written
 #' @param doInstall flag to indicate whether the package should also be installed
 #' @section This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.
