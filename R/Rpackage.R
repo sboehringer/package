@@ -219,6 +219,9 @@ probeDefinition = function(desc, dir = NULL) {
 #'		\item{instFiles: }{Other files to be installed. This is a list, the names of which specify
 #'			sub-folders in the \code{inst} sub-directory of the package. Values are character vectors
 #'			specifying files to be put there.}
+#'		\item{description: }{A sub-list with elements specifying the \code{DESCRIPTION} file of the package.
+#'			The following items describe these elements as \code{description-name}, where \code{name} is the
+#'			name of the element in \code{description}.}
 #'	}
 #' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
 #' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
