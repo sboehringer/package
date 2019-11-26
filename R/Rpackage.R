@@ -222,6 +222,11 @@ probeDefinition = function(desc, dir = NULL) {
 #'		\item{description: }{A sub-list with elements specifying the \code{DESCRIPTION} file of the package.
 #'			The following items describe these elements as \code{description-name}, where \code{name} is the
 #'			name of the element in \code{description}.}
+#'		\item{git: }{A sub-list specifying git behavior, documented as \code{git-name}.}
+#'		\item{git-push: }{Logical, whether to push each commit, defaults to \code{FALSE}.
+#'			A push is automatically performed, once a new release is created, irrespective of this setting.
+#'			To suppress a push in these cases, push has to set to \code{FALSE} in the \code{gitOptions}
+#'			provided to \code{createPackage}. }
 #'	}
 #' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
 #' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
