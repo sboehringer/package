@@ -36,8 +36,6 @@ packageDefinition = list(
 #' \item Be extra prepared
 #' }
 #' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
-#' @seealso %% ~~objects to See Also as \code{\link{help}}, ~~~
-#' @keywords ~kwd1 ~kwd2
 #' @examples
 #' 
 #' myLittlePony()

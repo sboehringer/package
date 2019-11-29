@@ -37,11 +37,13 @@ The following elements control package generation.
 		name of the element in \code{description}.}
 	\item{git: }{A sub-list specifying git behavior, documented as \code{git-name}. If you do not
 		want to use git, omit this entry from \code{packageDefinition}. If present, a git repository
-		is created and maintained in the target folder.}
-	\item{git-push: }{Logical, whether to push each commit, defaults to \code{FALSE}.
+		is created and maintained in the target folder. Default settings for the package can be 
+		overwritten using the  \code{gitOptions} argument.}
+	\item{git-push: }{Logical, whether to push each commit, defaults to \code{FALSE}.}
+	\item{git-pushOnNewVersion: }{Logical, whether to push each when a new release is created
+		(see item \code{description-news}. Defaults to \code{TRUE}.
 		A push is automatically performed, once a new release is created, irrespective of this setting.
-		To suppress a push in these cases, push has to set to \code{FALSE} in the \code{gitOptions}
-		provided to \code{createPackage}. }
+		To suppress a push in these cases, push has to set to \code{FALSE} in the. }
 }
 }
 \examples{
@@ -50,10 +52,11 @@ myLittlePony()
 
 }
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+package-package
 }
 \author{
 Stefan Böhringer, \email{r-packages@s-boehringer.org}
 }
-\keyword{~kwd1}
-\keyword{~kwd2}
+\keyword{create}
+\keyword{createPackage}
+\keyword{package}
