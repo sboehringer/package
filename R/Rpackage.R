@@ -223,15 +223,15 @@ probeDefinition = function(desc, dir = NULL) {
 #'			specifying files to be put there.}
 #'		\item{description: }{A sub-list with elements specifying the \code{DESCRIPTION} file of the package.}
 #'		\item{description-title: }{The title of the help page 'package-myPackage' (myPackage is the name
-#'			of the package) and the title fiedl in DESCRIPTION.
-#'		\item{description-author: } The \code{Author} field in DESCRIPTION.
+#'			of the package) and the title fiedl in DESCRIPTION.}
+#'		\item{description-author: }{The \code{Author} field in DESCRIPTION.
 #'		\item{description-description: } The \code{Description} field in DESCRIPTION. The text is re-used
 #'			for the package documentation as displayed by ?'package-myPackage' and is prepended to the 
 #'			seperate package documentation. It is also inserted as a Description section of a Markdown file
 #'			if git is used. This string should therefore not make use of roxygen/markdown markup.}
-#'		\item{description-depends: } A character vector with package dependencies.
-#'		\item{description-suggests: } A character vector with package suggestions.
-#'		\item{description-news: } A character vector with a single element containing the \code{NEWS}
+#'		\item{description-depends: }{A character vector with package dependencies.}
+#'		\item{description-suggests: }{A character vector with package suggestions.}
+#'		\item{description-news: }{A character vector with a single element containing the \code{NEWS}
 #'			file of the package. It is assumed that a line starting with a non white space character
 #'			indicates a new version. The version identifier is taken to be all characters until the
 #'			first white space. Once a new version is detected, git actions might be triggered (see below).}
