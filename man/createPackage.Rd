@@ -22,30 +22,6 @@ used for parsing, coming from packages \code{package}, \code{jsonlite}, and \cod
 \description{
 This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.
 }
-\details{
-The package is specified through a list coming from an R script or configuration file.
-The following elements control package generation.
-\itemize{
-	\item{name: }{The name of the pacakge}
-	\item{files: }{R-files to be put into the package. If an R-file is used for the configuration,
-		it will automatically be include. This allows package definition through a single R-file.}
-	\item{instFiles: }{Other files to be installed. This is a list, the names of which specify
-		sub-folders in the \code{inst} sub-directory of the package. Values are character vectors
-		specifying files to be put there.}
-	\item{description: }{A sub-list with elements specifying the \code{DESCRIPTION} file of the package.
-		The following items describe these elements as \code{description-name}, where \code{name} is the
-		name of the element in \code{description}.}
-	\item{git: }{A sub-list specifying git behavior, documented as \code{git-name}. If you do not
-		want to use git, omit this entry from \code{packageDefinition}. If present, a git repository
-		is created and maintained in the target folder. Default settings for the package can be 
-		overwritten using the  \code{gitOptions} argument.}
-	\item{git-push: }{Logical, whether to push each commit, defaults to \code{FALSE}.}
-	\item{git-pushOnNewVersion: }{Logical, whether to push each when a new release is created
-		(see item \code{description-news}. Defaults to \code{TRUE}.
-		A push is automatically performed, once a new release is created, irrespective of this setting.
-		To suppress a push in these cases, push has to set to \code{FALSE} in the. }
-}
-}
 \examples{
 
 myLittlePony()

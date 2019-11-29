@@ -211,7 +211,9 @@ probeDefinition = function(desc, dir = NULL) {
 #' \item Be extra prepared
 #' }
 #' @details The package is specified through a list coming from an R script or configuration file.
-#'	The following elements control package generation.
+#'	The following elements control package generation. In this list \code{key1-key2} indicates a
+#'	sublist-element, i.e. it stand for \code{packageDefinition[[key1]][[key2]]}.
+#'	
 #'	\itemize{
 #'		\item{name: }{The name of the pacakge}
 #'		\item{files: }{R-files to be put into the package. If an R-file is used for the configuration,
@@ -219,18 +221,32 @@ probeDefinition = function(desc, dir = NULL) {
 #'		\item{instFiles: }{Other files to be installed. This is a list, the names of which specify
 #'			sub-folders in the \code{inst} sub-directory of the package. Values are character vectors
 #'			specifying files to be put there.}
-#'		\item{description: }{A sub-list with elements specifying the \code{DESCRIPTION} file of the package.
-#'			The following items describe these elements as \code{description-name}, where \code{name} is the
-#'			name of the element in \code{description}.}
-#'		\item{git: }{A sub-list specifying git behavior, documented as \code{git-name}. If you do not
+#'		\item{description: }{A sub-list with elements specifying the \code{DESCRIPTION} file of the package.}
+#'		\item{description-title: }{The title of the help page 'package-myPackage' (myPackage is the name
+#'			of the package) and the title fiedl in DESCRIPTION.
+#'		\item{description-author: } The \code{Author} field in DESCRIPTION.
+#'		\item{description-description: } The \code{Description} field in DESCRIPTION. The text is re-used
+#'			for the package documentation as displayed by ?'package-myPackage' and is prepended to the 
+#'			seperate package documentation. It is also inserted as a Description section of a Markdown file
+#'			if git is used. This string should therefore not make use of roxygen/markdown markup.}
+#'		\item{description-depends: } A character vector with package dependencies.
+#'		\item{description-suggests: } A character vector with package suggestions.
+#'		\item{description-news: } A character vector with a single element containing the \code{NEWS}
+#'			file of the package. It is assumed that a line starting with a non white space character
+#'			indicates a new version. The version identifier is taken to be all characters until the
+#'			first white space. Once a new version is detected, git actions might be triggered (see below).}
+#'		\item{git: }{A sub-list specifying git behavior. If you do not
 #'			want to use git, omit this entry from \code{packageDefinition}. If present, a git repository
-#'			is created and maintained in the target folder. Default settings for the package can be 
+#'			is created and maintained in the target folder. Default \code{git} settings for the package can be 
 #'			overwritten using the  \code{gitOptions} argument.}
 #'		\item{git-push: }{Logical, whether to push each commit, defaults to \code{FALSE}.}
 #'		\item{git-pushOnNewVersion: }{Logical, whether to push each when a new release is created
 #'			(see item \code{description-news}. Defaults to \code{TRUE}.
 #'			A push is automatically performed, once a new release is created, irrespective of this setting.
 #'			To suppress a push in these cases, push has to set to \code{FALSE} in the. }
+#'		\item{git-readme: }{Character vector with single entry with the content of a readme file that is put
+#'			as \code{README.md} into the package main folder. The description given under
+#'			\code{description-description} is appended to this text.}
 #'	}
 #' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
 #' @seealso package-package
