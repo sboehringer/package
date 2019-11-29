@@ -73,7 +73,7 @@ instFiles = list(),
 		# version to be documented in news section
 		#version = '0.1-0',
 		author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
-		description = 'This appears in the package-documentaion, the markdown of the git-repository and in th e package details. This package exports a single function, \\\\code{myLittlePony}, which prints a surprising message.',
+		description = 'This appears in the package-documentaion, the markdown of the git-repository and in the package details.',
 		depends = c(),
 		suggests = c(),
 		license = 'LGPL',
