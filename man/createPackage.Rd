@@ -4,8 +4,13 @@
 \alias{createPackage}
 \title{Create package from vector of source files and single configuration}
 \usage{
-createPackage(packageDesc, packagesDir = "~/src/Rpackages", dir = NULL,
-  doInstall = FALSE, gitOptions = list())
+createPackage(
+  packageDesc,
+  packagesDir = "~/src/Rpackages",
+  dir = NULL,
+  doInstall = FALSE,
+  gitOptions = list()
+)
 }
 \arguments{
 \item{packageDesc}{path to the configuration file (R, extended plist format, json, yaml).
@@ -80,7 +85,7 @@ instFiles = list(),
 		news = "0.1-0	Initial release"
 	),
 	git = list(
-		readme = '## Installation\\n```{r}\\nlibrary(devtools);\\ninstall_github("user/pkg-minimal")\\n```\\n',
+		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("user/pkg-minimal")\n```\n',
 		push = F,
 		pushOnNewVersion = F
 	)

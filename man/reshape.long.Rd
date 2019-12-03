@@ -4,9 +4,15 @@
 \alias{reshape.long}
 \title{Convert data in wide format to long format}
 \usage{
-reshape.long(d, vars = NULL, factorColumn = "factor",
-  valueColumn = "value", factors = as.factor(vars), useDisk = F,
-  rowNamesAs = NULL)
+reshape.long(
+  d,
+  vars = NULL,
+  factorColumn = "factor",
+  valueColumn = "value",
+  factors = as.factor(vars),
+  useDisk = F,
+  rowNamesAs = NULL
+)
 }
 \arguments{
 \item{d}{data frame with columns in wide format}

@@ -4,8 +4,14 @@
 \alias{file.locate}
 \title{Return absolute path for name searched in search-pathes}
 \usage{
-file.locate(path, prefixes = NULL, normalize = T, as.dirs = T,
-  force = F, home = T)
+file.locate(
+  path,
+  prefixes = NULL,
+  normalize = T,
+  as.dirs = T,
+  force = F,
+  home = T
+)
 }
 \arguments{
 \item{as.dirs}{assume that prefixes are pathes, i.e. a slash will be put between path and prefix}

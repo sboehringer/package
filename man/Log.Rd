@@ -6,8 +6,7 @@
 \alias{Log.level}
 \title{Log a message to stderr.}
 \usage{
-Log(o, level = get("DefaultLogLevel", envir = Log_env__),
-  doPrint = NULL)
+Log(o, level = get("DefaultLogLevel", envir = Log_env__), doPrint = NULL)
 }
 \arguments{
 \item{o}{Message to be printed.}

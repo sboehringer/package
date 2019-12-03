@@ -14,7 +14,7 @@ packageDefinition = list(
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
-		news = "0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release"
+		news = "0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release"
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
@@ -160,8 +160,9 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	# <p> roxigen2
 	Library(c('roxygen2', 'devtools'));
 	#document(packageDir, roclets = c('namespace', 'rd'));
-	#document(packageDir, roclets = c('collate', 'namespace', 'rd'), clean = T);
-	roxygenize(packageDir, roclets = c('rd'), clean = TRUE);
+	#document(packageDir, roclets = c('rd'));
+	#roxygenize(packageDir, roclets = c('rd'), clean = TRUE);
+	roxygenize(packageDir, clean = TRUE);
 
 	# <p> git
 	if (notE(o$git)) gitActions(o, packagesDir, debug, gitOptions);

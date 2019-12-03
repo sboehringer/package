@@ -4,9 +4,17 @@
 \alias{iterateModels_raw}
 \title{Iterate combinations of parameters}
 \usage{
-iterateModels_raw(modelList, models, f_iterate = function(...) list(...),
-  ..., callWithList = F, callMode = NULL, restrictArgs = T,
-  parallel = F, lapply__)
+iterateModels_raw(
+  modelList,
+  models,
+  f_iterate = function(...) list(...),
+  ...,
+  callWithList = F,
+  callMode = NULL,
+  restrictArgs = T,
+  parallel = F,
+  lapply__
+)
 }
 \arguments{
 \item{selectIdcs}{restrict models to the given indeces}

@@ -1,3 +1,4 @@
+0.4-4	bugfix NAMESPACE generation
 0.4-3	`createPackage` fully documented.
 0.4-2	More documentation
 0.4-1	Bug fix NEWS file

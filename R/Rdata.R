@@ -2196,6 +2196,7 @@ Table = function(v, min, max, ..., cats) {
 		return(table.n(v, n = max, min = min));
 	}
 }
+v2freq = function(v)(v/sum(v))
 
 #
 #	<p> numeric function

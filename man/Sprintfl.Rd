@@ -4,8 +4,7 @@
 \alias{Sprintfl}
 \title{Produce string by substituting placeholders}
 \usage{
-Sprintfl(.fmt, values, sprintf_cartesian = FALSE,
-  envir = parent.frame())
+Sprintfl(.fmt, values, sprintf_cartesian = FALSE, envir = parent.frame())
 }
 \arguments{
 \item{s}{template string}

@@ -4,15 +4,31 @@
 \alias{Df_}
 \title{Create data frames with more options than \code{data.frame}}
 \usage{
-Df_(df0, headerMap = NULL, names = NULL, min_ = NULL,
-  as_numeric = NULL, as_character = NULL, as_factor = NULL,
-  as_integer = NULL, as_logical = NULL, row.names = NA,
-  valueMap = NULL, Df_as_is = TRUE, simplify_ = FALSE,
-  deep_simplify_ = FALSE, t_ = FALSE, unlist_cols = F,
-  transf_log = NULL, transf_m1 = NULL, Df_doTrimValues = FALSE,
+Df_(
+  df0,
+  headerMap = NULL,
+  names = NULL,
+  min_ = NULL,
+  as_numeric = NULL,
+  as_character = NULL,
+  as_factor = NULL,
+  as_integer = NULL,
+  as_logical = NULL,
+  row.names = NA,
+  valueMap = NULL,
+  Df_as_is = TRUE,
+  simplify_ = FALSE,
+  deep_simplify_ = FALSE,
+  t_ = FALSE,
+  unlist_cols = F,
+  transf_log = NULL,
+  transf_m1 = NULL,
+  Df_doTrimValues = FALSE,
   Df_mapping_value = "__df_mapping_value__",
-  Df_mapping_empty = "__DF_EMPTY__", Do_Df_mapping_empty = TRUE,
-  apply_ = FALSE)
+  Df_mapping_empty = "__DF_EMPTY__",
+  Do_Df_mapping_empty = TRUE,
+  apply_ = FALSE
+)
 }
 \description{
 Create data frames with more options than \code{data.frame}
