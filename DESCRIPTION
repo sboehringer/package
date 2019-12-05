@@ -2,7 +2,7 @@ Package: package
 Type: Package
 Title: Create packages from R-code directly
 Version: 0.4-4
-Date: 03-12-2019
+Date: 05-12-2019
 Author: Stefan Böhringer <r-packages@s-boehringer.org>
 Maintainer: Stefan Böhringer <r-packages@s-boehringer.org>
 Description: This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.
