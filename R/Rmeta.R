@@ -521,8 +521,10 @@ freezeObjects = function(..., pos = 2, parent = parent.frame(), freezeObjectDir 
 #' @seealso [deparse()] which this function wraps
 #' @seealso [eval()] for the inverse operation
 #' @examples
+#' \dontrun{
 #'	Deparse(3)
 #'	Deparse(1 + 2)
 #'	Deparse(matrix(1:10, ncol = 5))
 #'	eval(Deparse(matrix(1:10, ncol = 5)))
+#' }
 Deparse = function(o)join(deparse(o));
