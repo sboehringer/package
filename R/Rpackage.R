@@ -10,7 +10,7 @@ packageDefinition = list(
 		title = 'Create packages from R-code directly',
 		# version to be documented in news section
 		#version = '0.1-0',
-		author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
+		author = 'Stefan B\uf6hringer <r-packages@s-boehringer.org>',
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools'),
 		suggests = c('jsonlite', 'yaml'),
@@ -48,7 +48,7 @@ packageInterpolationDict = function(o, debug = F) {
 		PACKAGE_NAME = o$name,
 		TYPE = firstDef(d$type, 'Package'),
 		TITLE = d$title,
-		VERSION = firstDef(d$version, Regexpr('\\S+', d$news)[[1]], '0.1-0'),
+		VERSION = o$version,	# determined in probeDefinition
 		DATE = firstDef(d$date, format(Sys.time(), "%d-%m-%Y")),
 		AUTHOR = firstDef(d$author, 'anonymous'),
 		MAINTAINER = firstDef(d$maintainer, d$author, 'anonymous'),
@@ -158,7 +158,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 		doc0 = paste0(packageDocPrefix, unlist(doc), "\n\"_PACKAGE\"\n");
 		doc1 = Sprintf(doc0, o$description, name = o$name);
 		doc2 = gsub("(^#)|((?<=\n)#)", "#'", doc1, perl = T);
-		print(doc2);
+		#print(doc2);
 		writeFile(Sprintf('%{pdir}s/R/%{name}s.R', o), doc2);
 		o$files = c(Sprintf('%{name}s.R', o), o$files);	# documentation file to list of files
 	}
@@ -200,20 +200,20 @@ probeDefinition = function(desc, dir = NULL) {
 		yaml = ({ Library('yaml'); read_yaml(path) })
 	);
 	o$dir = firstDef(dir, sp$dir);
+	o$version = firstDef(o$description$version, Regexpr('\\S+', o$description$news)[[1]], '0.1-0');
 	return(o);
 }
 
-checkPackage = function(packageDesc, packagesDir) {
-	packageDir = Sprintf("%{packagesDir}s/%{n}s", n = packageDesc$name);
+checkPackage = function(packageDesc, packagesDir) with (packageDesc, {
+	checkDir = packageDir = Sprintf("%{packagesDir}s/%{name}s");
 	if (file.exists(Sprintf("%{packageDir}s/.git"))) {
-		tmpDir = Sprintf('%{t}s/%{name}s', t = tempdir(), name = packageDesc$name);
-		dir.create(tmpDir, FALSE);
-		SystemS('cd %{packageDir}q ; git archive --format tar HEAD | ( cd %{tmpDir}q ; tar xf - )', 2);
-		packageDir = tmpDir;
-		
+		packagesDir = tempdir();
+		checkDir = Sprintf('%{packagesDir}s/%{name}s');
+		dir.create(checkDir, FALSE);
+		SystemS('cd %{packageDir}q ; git archive --format tar HEAD | ( cd %{checkDir}q ; tar xf - --overwrite )', 2);
 	}
-	SystemS('R CMD build %{packageDir}q ; R CMD check %{packageDir}q', 2);
-}
+	SystemS('cd %{packagesDir}q ; R CMD build %{name}q ; R CMD check %{name}q_%{version}s.tar.gz', 2);
+})
 
 #' Create package from vector of source files and single configuration
 #' 
