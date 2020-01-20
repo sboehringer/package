@@ -89,8 +89,8 @@ instFiles = list(),
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("user/pkg-minimal")\n```\n',
-		push = F,
-		pushOnNewVersion = F
+		push = FALSE,
+		pushOnNewVersion = FALSE
 	)
 );
 
