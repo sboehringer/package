@@ -6,9 +6,17 @@
 \usage{
 valueCombinations(d)
 }
+\arguments{
+\item{d}{data frame for which value combinations are to be caclulated}
+}
+\value{
+list with all value combinations present in \code{d}
+}
 \description{
 Return all value combinations appearing in a data frame
 }
 \examples{
+\dontrun{
 combs = valueCombinations(iris);
+}
 }

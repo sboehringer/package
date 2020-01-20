@@ -14,6 +14,8 @@ Log(o, level = get("DefaultLogLevel", envir = Log_env__), doPrint = NULL)
 \item{level}{If \code{Log.setLevel} was called with this value, subsequent
 calls to \code{Log} with values of \code{level} smaller or equal to this
 value will be printed.}
+
+\item{doPrint}{additional object that will be output using \code{print}.}
 }
 \description{
 Log a message to stderr. Indicate a logging level to control verbosity.
@@ -24,12 +26,12 @@ global log-level is set to greater or equal the value indicated by
 \code{level}. \code{Log.level} returns the current logging level.
 }
 \examples{
-
+\dontrun{
 	Log.setLevel(4);
 	Log('hello world', 4);
 	Log.setLevel(3);
 	Log('hello world', 4);
-
+}
 }
 \seealso{
 \code{\link{Log.setLevel}}, ~~~

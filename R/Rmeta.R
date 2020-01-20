@@ -32,16 +32,17 @@ assign('DefaultLogLevel', 4, envir = Log_env__);
 #' @param level If \code{Log.setLevel} was called with this value, subsequent
 #' calls to \code{Log} with values of \code{level} smaller or equal to this
 #' value will be printed.
+#' @param doPrint additional object that will be output using \code{print}.
 #' @author Stefan Böhringer <r-packages@@s-boehringer.org>
 #' @seealso \code{\link{Log.setLevel}}, ~~~
 #' @keywords ~kwd1 ~kwd2
 #' @examples
-#' 
+#' \dontrun{
 #' 	Log.setLevel(4);
 #' 	Log('hello world', 4);
 #' 	Log.setLevel(3);
 #' 	Log('hello world', 4);
-#' 
+#' }
 Log = function(o, level = get('DefaultLogLevel', envir = Log_env__), doPrint = NULL) {
 	if (level <= get('GlobalLogLevel', envir = Log_env__)) {
 		cat(sprintf("R %s: %s\n", date(), as.character(o)));
@@ -316,6 +317,8 @@ thawCall = function(
 	envir = .GlobalEnv) {
 
 	load(freeze_file, envir = envir);
+	# <!> untested change [addition of line] 15.1.2020
+	callSpecification = get('callSpecification');
 	r = with(callSpecification, {
 		for (library in freeze_control$libraries) {
 			eval(parse(text = sprintf('library(%s)', library)));
@@ -433,7 +436,7 @@ freezeCall = function(freeze_f, ...,
 	thaw_transformation = identity) {
 
 	# args = eval(list(...), envir = freeze_envir)
-	call_ = callWithFunctionArgs(f = freeze_f, args = list(...),
+	call_ = callWithFunctionArgs(f__ = freeze_f, args__ = list(...),
 		envir__ = freeze_envir, name = as.character(sys.call()[[2]]), env_eval = freeze_env_eval);
 
 	freezeCallEncapsulated(call_,
@@ -505,4 +508,21 @@ freezeObjects = function(..., pos = 2, parent = parent.frame(), freezeObjectDir 
 #	</p> freeze/thaw functions
 #
 
+#' Deparsing of expression
+#'
+#' Create single character string from R expression
+#'
+#' Calls deparse on argument and pastes together the return value of \code{deparse} resulting
+#' in a single character string.
+#'
+#' @param o Expression/Object to be deparsed
+#'
+#' @return single character vector with the deparsed expression
+#' @seealso [deparse()] which this function wraps
+#' @seealso [eval()] for the inverse operation
+#' @examples
+#'	Deparse(3)
+#'	Deparse(1 + 2)
+#'	Deparse(matrix(1:10, ncol = 5))
+#'	eval(Deparse(matrix(1:10, ncol = 5)))
 Deparse = function(o)join(deparse(o));

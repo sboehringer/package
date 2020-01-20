@@ -465,10 +465,16 @@ trimString = function(s) {
 	)
 }
 
+valueMapperRaw = function(n, d)d[[n]]
+valueMapperStandard = function(n, d) {
+	if (is.na(d[[n]])) '{\\bf Value missing}' else (if (is.null(d[[n]])) n else d[[n]])
+}
+
 # <N> maxIterations needs to be large as a new iteration is entered after each successful substitution
 #	this is necessary, as 
-mergeDictToString = function(d, s, valueMapper = function(s)
-	ifelse(is.na(d[[n]]), '{\\bf Value missing}', d[[n]]),
+mergeDictToString = function(d, s,
+	valueMapper = valueMapperStandard,
+	#valueMapper = function(s)ifelse(is.na(d[[n]]), '{\\bf Value missing}', d[[n]]),
 	iterative = F, re = F, maxIterations = 1e4, doApplyValueMap = T, doOrderKeys = T, maxLength = 1e7) {
 	ns = names(d);
 	# proceed in order of decreasing key lengthes
@@ -478,7 +484,7 @@ mergeDictToString = function(d, s, valueMapper = function(s)
 		for (n in ns) {
 			# counteract undocumented string interpolation
 			subst = if (doApplyValueMap)
-				gsub("[\\\\]", "\\\\\\\\", valueMapper(d[[n]]), perl = T)
+				gsub("[\\\\]", "\\\\\\\\", valueMapper(n, d), perl = T)
 				else d[[n]];
 			# <!> quoting
 			if (!re) n = sprintf("\\Q%s\\E", n);
@@ -521,7 +527,7 @@ qs = function(s, ...)sapply(s, qsSingle, ...)
 # single quote if needed
 qssSingle = function(s, force = F) {
 	# <N> better implementation possible: detect unquoted white-space
-	if (force || length(fetchRegexpr("[ \t'()\\[\\]:,]", s)) > 0) {
+	if (force || nchar(s) == 0 || length(fetchRegexpr("[ \t'\"()\\[\\]:,]", s)) > 0) {
 		s = gsub("(['])", "'\"'\"'", s);
 		s = sprintf("'%s'", s);
 	}
@@ -552,10 +558,12 @@ qsPath = function(s, ...)sapply(s, qsSinglePath, ...)
 #'	by start/length
 #'
 #' @examples
+#' \dontrun{
 #' print(Substr("abc", c(2, 3), c(1, 1), c("def", 'jkl')));
 #' print(Substr("abcdef", c(2, 3, 5), c(1, 1, 1), c("123", '456', '789')));
 #' print(Substr("abcdef", c(1, 3, 5), c(1, 1, 1), c("123", '456', '789')));
 #' print(Substr("abcdef", c(1, 3, 5), c(0, 1, 0), c("123", '456', '789')));
+#' }
 Substr = function(s, start, length, replacement) {
 	if (missing(replacement)) return(substr(s, start, start + length - 1));
 	start = c(start, nchar(s) + 1);
@@ -589,15 +597,22 @@ sprintfIgnoreEscapes = function(r) {
 #' The function behaves similar to sprintf, except that character sequences to be substituted are
 #' indicated by name. To be implemented: *-specifications
 #'
-#' @param s template string
-#' @param d values to substitute into \code{s}
-#' @param template template for substitution pattern. Within this pattern \code{__DICT_KEY__} is
-#'  substituted for a key in \code{d}. This string \code{k} is substituted in \code{s} with \code{d[[k]]}.
+#' #@param s template string
+#' #@param d values to substitute into \code{s}
+#' #@param template template for substitution pattern. Within this pattern \code{__DICT_KEY__} is
+#' # substituted for a key in \code{d}. This string \code{k} is substituted in \code{s} with \code{d[[k]]}.
+#' @param .fmt formatting string into which values are interpolated (see details)
+#' @param values list or vector of values to be used for interpolation
+#' @param sprintf_cartesian boolean to indicate whether cartesian product of values should be used.
+#'   Otherwise standard recyling rules apply.
+#' @param envir environment in which values are to be evaluated
 #'
 #' @examples
+#' \dontrun{
 #' Sprintf('These are N %{N} characters.', list(N = 10));
 #' Sprintf('These are N %{N}d characters.', list(N = 10));
 #' Sprintf('These are N %{N}02d characters.', list(N = 10));
+#' }
 Sprintfl = function(.fmt, values, sprintf_cartesian = FALSE, envir = parent.frame()) {
 	dict = extraValues = list();
 	for (i in seq_along(values)) {
@@ -783,10 +798,17 @@ adic2ord = function(v, base = rep(2, 5))((v %*% cumprod1(base))[1, 1])
 #'
 #' @param ascending restrict sequences to be ascending; return empty list if to < from
 #' @param descending restrict sequences to be descending; return empty list if from < to
+#' @param from starting value
+#' @param to ending value
+#' @param neg boolean to indicate wheter sequence should be negated before return
+#' @param ... parameters passed on to \code{seq}
+#' @return sequence from \code{from} to \code{to}
 #' @examples
+#' \dontrun{
 #' Seq(1, 10, ascending = T)
 #' Seq(1, 10, descending = T)
 #' Seq(10, 1, ascending = NA)
+#' }
 Seq = function(from, to, ..., ascending = T, descending = !ascending, neg = F) {
 	# <!> order matters: if called with only descending == T
 	if (nif(descending) && to > from) return(if (neg) T else c()) else
@@ -803,7 +825,9 @@ SeqRows = function(o)Seq(1, nrow(o))
 #' @return vector of pairs of indeces indicating the first and last element in a vector for the blocks 
 #'  specified by \code{counts}
 #' @examples
+#' \dontrun{
 #' count2blocks(c(1, 5, 3))
+#' }
 count2blocks = function(counts) {
 	ccts = cumsum(counts);
 	fidcs = c(1, ccts[-length(ccts)] + 1);
@@ -908,15 +932,23 @@ cumpartition = function(N, p) {
 #' Extract parts of a nested structure based on the range from..to
 #'
 #'
-#' @param Ns Vector of integers that specify the size of the substructure
-#' @return Return list of list, where each basic list contains key \code{segment}
+#' @param Ns Vector of integers that specify the size of the substructures
+#' @param from absolute index where to start extraction
+#' @param to absolute index where to stop extraction
+#' @return Return list of lists, where each basic list contains key \code{segment}
 #'  (which of the elements of Ns) and key \code{range}, a list with elements \code{from} and \code{to},
 #'  specifying which elements to use from
 #'  that segment.
-subListFromRaggedIdcs = function(Ns, from = 1, to = sum(segments)) {
+#' @examples
+#' \dontrun{
+#'    # TestMe: T1
+#'    subListFromRaggedIdcs(c(2, 4, 10, 15), 1, 20)
+#' }
+subListFromRaggedIdcs = function(Ns, from = 1, to) {
 	NsCS = cumsum(Ns);
 	NsCSs = c(0, pop(NsCS));	# shifted cumsum
 	segments = which(from <= NsCS & to > NsCSs);
+	if (missing(to)) to = sum(segments);
 	r = lapply(segments, function(segment){
 		N = Ns[segment];	# list-call
 		from_ = 1;
@@ -932,6 +964,8 @@ subListFromRaggedIdcs = function(Ns, from = 1, to = sum(segments)) {
 #' Extract parts of nested lists based on the range from..to
 #'
 #'
+#' @param from absolute index where to start extraction
+#' @param to absolute index where to stop extraction
 #' @param ls nested list structure (currently only two levels supported)
 #' @return Return list of list, where each basic list contains key \code{segment}
 #'  (which of the elements of Ns) and key \code{range}, a list with elements \code{from} and \code{to},
@@ -1044,7 +1078,7 @@ list.combine = function(l, byRow = T, names = NULL, doMerge = F) {
 list.embed = function(l, key = 'key')lapply(l, function(e)SetNames(list(e), key));
 
 compare_print = function(r, e) {
-	require('compare');
+	#require('compare');
 	cmp = compare(model = r, comparison = e);
 	if (!cmp$result) {
 		print("Expectation not met (result != expectation):");
@@ -1362,9 +1396,10 @@ eisapply = function(v, f, ...) {
 	names(r) = names(v);
 	r
 }
-ensapply = function(l, f, ...) {
+ensapply = function(l0, f, ...) {
+	l = as.list(l0);
 	ns = names(l);
-	r = sapply(seq_along(l), function(i, ...)f(l[[i]]), ns[i], ...);
+	r = sapply(seq_along(l), function(i, ...)f(l[[i]], ns[i], ...), ...);
 	names(r) = ns;
 	r
 }
@@ -1453,29 +1488,6 @@ Lundrop2row = function(l)lapply(l, undrop2row);
 
 undrop2col = function(e)(if (is.vector(e)) matrix(e, nrow = length(e)) else e);
 Lundrop2col = function(l)lapply(l, undrop2col);
-
-ByIndices = function(data, INDICES, USE.NAMES = FALSE) {
-	if (class(INDICES) == 'formula') {
-		rhs = all.vars(formula.rhs(INDICES));
-		INDICES = if (USE.NAMES) Df_(data[, rhs, drop = F], as_character = rhs) else {
-			combs = model_matrix_from_formula(INDICES, data, remove.intercept = length(rhs) > 0)$mm;
-			setNames(lapply(1:ncol(combs), function(i)combs[, i]), names(combs));
-		}
-	} else if (class(INDICES) == 'data.frame') INDICES = Df_(idcs, as_character = names(idcs));
-	INDICES
-}
-
-By = function(data, INDICES, FUN, ..., simplify = TRUE, RBIND = FALSE, USE.NAMES = FALSE, SEP = ':') {
-	idcs = ByIndices(data, INDICES, USE.NAMES);
-	r = by(data, idcs, FUN, ..., simplify = simplify);
-	if (USE.NAMES) {
-		ns = sapply(by(idcs, idcs, unique), join, sep = SEP);
-		names(r) = ns;
-	}
-	if (RBIND) r = do.call(rbind, Lundrop2col(r));
-	r
-}
-
 
 # USE.NAMES logic reversed for sapply
 sapplyn = function(l, f, ...)sapply(l, f, ..., USE.NAMES = F);
@@ -2286,7 +2298,7 @@ DfApplyValueMap = function(r, valueMap, Df_doTrimValues = FALSE,
 # as of 19.12.2013 <!>: as.numeric -> as_numeric
 # as of 22.5.2014 <!>: t -> t_
 # as of 13.11.2014 <!>: sapply -> simplify_
-#' Create data frames with more options than \code{data.frame}
+# Create data frames with more options than \code{data.frame}
 Df_ = function(df0, headerMap = NULL, names = NULL, min_ = NULL,
 	as_numeric = NULL, as_character = NULL, as_factor = NULL, as_integer = NULL, as_logical = NULL,
 	row.names = NA, valueMap = NULL, Df_as_is = TRUE, simplify_ = FALSE,
@@ -2505,6 +2517,11 @@ cumsumR = function(l, offset = 1) {
 #
 
 #' @title wrapper for order to allow multivariate ordering
+#'
+#' @param v object (vector or data frame) for which order is to be calculated
+#' @param ... additional arguemnts passed on to \code{order}
+#' @return order of the object
+#' @seealso {order{}} which this function wraps around
 Order = function(v, ...) {
 	if (is.data.frame(v)) do.call(order, lapply(v, identity), ...) else
 	if (is.list(v)) do.call(order, v, ...) else
@@ -2513,15 +2530,26 @@ Order = function(v, ...) {
 
 #' @title Return all value combinations appearing in a data frame
 #'
+#' @param d data frame for which value combinations are to be caclulated
+#' @return list with all value combinations present in \code{d}
 #' @examples
+#' \dontrun{
 #' combs = valueCombinations(iris);
+#' }
 valueCombinations = function(d) merge.multi.list(dimnames(table(d)));
 
 #' @title Computes order so that inverseOrder after order is the identity
 #'
+#' Caculate ranks for arguemnt \code{p}. Works on vactors and data frames.
+#'
+#' @param p object for which ranks are to be comptued
+#' @return vector of ranks of elements of \code{p}
+#'
 #' @examples
+#' \dontrun{
 #' v = runif(1e2);
 #' print(all(sort(v)[inverseOrder(v)] == v))
+#' }
 Rank = inverseOrder = inversePermutation = function(p) {
 	## <p> naive version
 	# 	o = order(p);
@@ -2535,19 +2563,38 @@ Rank = inverseOrder = inversePermutation = function(p) {
 }
 
 #' @title Calculates inverseOrder, assuming that the argument is already an \code{order}-vector.
+#'
+#' @param p obect for which the inverse order is to be calculated
+#' @return vector with integers representing the inverse order
 inverseOrder_fromOrder = function(p)which.indeces(1:length(p), p)
 
 #' @title Return vector that reorders v to equal reference.
 #'
 #' Assuming that two arguments are permutaions of each other, return a vector of indeces such that \code{all(reference == v[order_align(reference, v)]) == T} for all vectors \code{reference, v}.
 #'
+#' @param reference vector with the reference ordering
+#' @param v vector that is to be ordered the same way as \code{reference}
+#' @return vector of indeces so that \code{v[return_value]} is the same as \code{reference}
+#'
 #' @examples
+#' \dontrun{
 #' sapply(1:10, function(i){v = sample(1:5); v[order_align(5:1, v)]})
 #' sapply(1:10, function(i){v = runif(1e2); v1 = sample(v, length(v)); all(v1[order_align(v, v1)] == v)})
+#' }
 order_align = function(reference, v)Order(v)[inverseOrder(reference)];
 
-#' Calculates \code{order_align}, assuming that the both arguments are already orders.
-#' sapply(1:40, function(i){v = runif(1e2); v1 = sample(v, length(v)); all(v1[order_align_fromOrder(order(v), order(v1))] == v)})
+#' @title Calculates \code{order_align}, assuming that the both arguments are already orders.
+#'
+#' Analogous to \code{order_align} under the assumption that provided arguments are orders.
+#'
+#' @param reference order of a reference vector
+#' @param v order of vector that is to be brought into the order of \code{reference}
+#' @return order that can be applied to the orignal vector (from which \code{v} was calculated) to make it identical to the vector underlying \code{reference}
+#'
+#' @examples
+#' \dontrun{
+#'   sapply(1:40, function(i){v = runif(1e2); v1 = sample(v, length(v)); all(v1[order_align_fromOrder(order(v), order(v1))] == v)})
+#' }
 order_align_fromOrder = function(reference, v)v[inverseOrder_fromOrder(reference)];
 
 # permutation is in terms of elements of l (not indeces)
@@ -2661,37 +2708,14 @@ recodeLevels = function(f, map = NULL, others2na = TRUE, levels = NULL, setLevel
 		if (!is.null(setLevels)) r = ifelse(r %in% setLevels, r, NA);
 		# <p> rename levels
 		if (!is.null(setLevelsTo)) {
-			r = drop.levels(ifelse(as.integer(r) <= length(setLevels), r, NA));
+			#r = drop.levels(ifelse(as.integer(r) <= length(setLevels), r, NA));
+			# 14.1.2020
+			r = droplevels(ifelse(as.integer(r) <= length(setLevels), r, NA));
 			levels(r) = setLevelsTo;
 		}
 		r = factor(r, levels = if (!is.null(setLevels)) levlsN0 else levlsN);
 	}
 	r
-}
-factorFromFactors = function(d, sep = ';', safeNames = TRUE) {
-	combs = unique(d[completeRows(d), , drop = F]);
-	combsO = combs[order.df(combs), , drop = F];
-	levels = apply(combsO, 1, function(comb)join(comb, sep));
-	if (safeNames) levels = gsub(' ', '.', levels);
-	combsI = Df(combsO, i = 1:nrow(combsO));
-	combsM = merge(Df(d, j = 1:nrow(d)), combsI, all.x = T, sort = F);
-	factorN = as.factor((levels[combsM$i])[order(combsM$j)]);
-	factorN
-}
-# ~ cat1 + cat2
-# create combinations from cat1/cat2, enumerate
-factorFromFormula = function(d, form, sep = ';', safeNames = TRUE) {
-	vars = formula.covariates(form);
-	factorFromFactors(d[, vars, drop = F], sep = sep, safeNames = safeNames)
-}
-factorFromModelMatrix = function(mm, sep = ';') {
-	combs = unique(mm);
-	combsO = combs[order.df(combs), , drop = F];
-	levels = apply(combsO, 1, function(comb)join(dimnames(mm)[[2]][comb], sep));
-	combsI = Df(combsO, i = 1:nrow(combsO));
-	combsM = merge(Df(d, j = 1:nrow(d)), combsI, all.x = T, sort = F);
-	factorN = as.factor((levels[combsM$i])[order(combsM$j)]);
-	factorN
 }
 
 factor2int = function(f)as.integer(as.character(f))
@@ -2906,21 +2930,6 @@ merge.multi.list = function(l, .col.names = NULL, .col.names.prefix = "X",
 	df0
 }
 
-# analysis pattern using merge.multi.list
-# i needs not to be an argument to f as .do.call strips excess arguments
-iterateModels_old = function(modelList, f, ...,
-	.constraint = NULL, .clRunLocal = T, .resultsOnly = F, .unlist = 0, lapply__ = clapply) {
-	models = merge.multi.list(modelList, .constraint = .constraint);
-
-	r = lapply__(1:dim(models)[1], function(i, ..., f__, models__) {
-		args = c(list(i = i), as.list(models__[i, , drop = F]), list(...));
-		.do.call(f__, args)
-	}, ..., f__ = f, models__ = models);
-	r = if (.resultsOnly) r else list(models = models, results = r);
-	r = unlist.n(r, .unlist);
-	r
-}
-
 # list of list, vector contains index for each of these lists to select elements from
 #	these elements are merged and return
 #	if sub-element is not a list, take name of sub-element and contruct list therefrom
@@ -3054,9 +3063,22 @@ Kronecker = function(l, ...) {
 #'
 #' This function takes a list of parameters for which several values are to be evaluated. These values can be vectors of numbers or lists that contain blocks of parameters. All combinations are formed and passed to a user supplied function \code{f}. This functions takes an index of the combination together with parameter values. Argument \code{callWithList} controls whether there is exactly one argument per parameter position or wether one more step of unlisting takes place. In case that a block of parameters is supplied, all values of the block are passed as individual arguments to \code{f} in case \code{callWithList == F}.
 #'
-#' @param selectIdcs restrict models to the given indeces
+#' #@param selectIdcs restrict models to the given indeces
+#' @param modelList list specifying the models (see details)
+#' @param models matrix containing indeces to sub-models (see details)
+#' @param f_iterate function to be iterated across models
+#' @param callWithList boolean to indicate whether model combination is to be supplied as a list.
+#'   Otherwise model specification is inlined as arguments (see details)
+#' @param callMode 'inline', 'list', 'inlist'
+#' @param restrictArgs boolean to indicate whether over-supplied arguments (with respect to \code{f_iterate})
+#"   should be ignored. Otherwise, an error will be raised.
+#' @param parallel boolean to inidcate whether iteration should be parallelized with
+#'    \code{parallelize.dynamic}
+#' @param lapply__ the iterator to be used (ignored at this moment)
+#' @param ... extra arguments to be passed to \code{f_iterate}
 #'
 #' @examples
+#' \dontrun{
 #' modelList = list(global = list(list(a=1, b=2)), N = c(1, 2, 3));
 #' print(iterateModels(modelList));
 #' modelList = list(N = c(1, 2, 3), parsAsBlock = list(list(list(c = 1, d = 2)), list(list(c = 3, d = 4))));
@@ -3071,10 +3093,7 @@ Kronecker = function(l, ...) {
 #' # inline calling
 #' modelList = list(N = list(list(a = 1, b = 2), list(a = 3, b = 5)), parsAsBlock = list(list(c = 1, d = 2), list(c = 3, d = 4)));
 #' print(iterateModels(modelList));
-#'
-#'
-#'
-#' callMode: 'inline', 'list', 'inlist'
+#' }
 iterateModels_raw = function(modelList, models, f_iterate = function(...)list(...), ...,
 	callWithList = F, callMode = NULL, restrictArgs = T, parallel = F, lapply__) {
 	if (!parallel) Lapply = lapply;
@@ -3101,7 +3120,7 @@ iterateModels_prepare = function(modelList, .constraint = NULL,
 	# <p> handle constraints
 	selC = if (is.null(.constraint)) T else
 		unlist(iterateModels_raw(modelList, models, f_iterate = .constraint,
-			parallel = FALSE, callMode = callMode, restrictArgs = restrictArgs, ...));
+			parallel = FALSE, callMode = callMode, restrictArgs = restrictArgs));
 	selI = if (is.null(selectIdcs)) T else 1:nrow(models) %in% selectIdcs;
 	#	apply constraints
 	models = models[selC & selI, , drop = F];
@@ -3281,18 +3300,20 @@ reshape.wide = function(d, ids, vars, blockVars = F, reverseNames = F, sort.by.i
 #' @param factorColumn name of the column to be created for the factor
 #' @param valueColumn name of the new column of values that were in wide format
 # factors: provide factor combinations explicitly for vars (otherwise split by '.', <i>)
+#' @param rowNamesAs name of the column that should contain row names
 #' @examples
+#' \dontrun{
 #'	#reshape variables 2:9 (forming two groups: case/ctr), value of which is named 'group'
 #'	# the shortened columns will get names valueColumn
 #'	d0 = reshape.long(d, vars = 2:9, factors = c('case', 'ctr'), factorColumn = 'group',
 #'		valueColumn = c('AA', 'AG', 'GG', 'tot'));
 #'
-#' Example:
 #'	# reshape several grouped columns
 #' 	d2 = reshape.long(d1, vars = avu(vs),
-#		factorColumn = 'time', valueColumn = valueNames, factors = as.factor(1:3));
+#'		factorColumn = 'time', valueColumn = valueNames, factors = as.factor(1:3));
+#'	}
 reshape.long = function(d, vars = NULL, factorColumn = 'factor', valueColumn = 'value',
-	factors = as.factor(vars), useDisk = F, rowNamesAs = NULL) {
+	factors = as.factor(vars), rowNamesAs = NULL) {
 	if (is.null(vars)) vars = names(d);
 	# make rownames an extra column
 	if (!is.null(rowNamesAs)) {
@@ -3328,7 +3349,14 @@ DfUniqueRowsByCols = function(d, cols) {
 	as.integer(row.names(unique(d[, cols, drop = F])))
 }
 
-#' Reduce data frame by picking the first row of blocks for which \code{cols} has the same values
+#' Reduce data frame to be unique on subset of columns
+#'
+#' Reduce data frame by picking the first row of blocks for which \code{cols} has the same values.
+#'
+#' @param d data frame to be made unique
+#' @param cols columns for which the reduced data frame has to be unique
+#' @param drop argument passed to subset selection \code{`[`}
+#' @return the reduced data frame
 DfUniqueByCols = uniqueByCols = function(d, cols, drop = FALSE) {
 	d[DfUniqueRowsByCols(d, cols), , drop = drop]
 }
@@ -3615,7 +3643,8 @@ formula.re = function(formula, data, ignore.case = F, re.string = '.*') {
 		}
 		varf
 	});
-	formulaExp = as.formula(mergeDictToString(subst, formula));
+	formula1 = mergeDictToString(subst, formula);
+	formulaExp = as.formula(formula1);
 	formulaExp
 }
 

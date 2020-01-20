@@ -7,16 +7,29 @@
 Seq(from, to, ..., ascending = T, descending = !ascending, neg = F)
 }
 \arguments{
+\item{from}{starting value}
+
+\item{to}{ending value}
+
+\item{...}{parameters passed on to \code{seq}}
+
 \item{ascending}{restrict sequences to be ascending; return empty list if to < from}
 
 \item{descending}{restrict sequences to be descending; return empty list if from < to}
+
+\item{neg}{boolean to indicate wheter sequence should be negated before return}
+}
+\value{
+sequence from \code{from} to \code{to}
 }
 \description{
 This is a wrapper around seq that adds constraints. Setting ascending, descending to NA reverts to
 standard \code{seq} behaviour.
 }
 \examples{
+\dontrun{
 Seq(1, 10, ascending = T)
 Seq(1, 10, descending = T)
 Seq(10, 1, ascending = NA)
+}
 }

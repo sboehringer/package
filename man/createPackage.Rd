@@ -9,6 +9,7 @@ createPackage(
   packagesDir = "~/src/Rpackages",
   dir = NULL,
   doInstall = FALSE,
+  doCheck = T,
   gitOptions = list()
 )
 }
@@ -21,6 +22,8 @@ If a propertyList/JSON/YAML-file is provided, they have to parse into a list cor
 used for parsing, coming from packages \code{package}, \code{jsonlite}, and \code{yaml}.}
 
 \item{doInstall}{flag to indicate whether the package should also be installed}
+
+\item{doCheck}{whether to run R CMD check --cran on the package}
 
 \item{packageDir}{folder in which the folder structure of the package is written}
 }

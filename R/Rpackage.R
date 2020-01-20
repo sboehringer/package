@@ -105,6 +105,16 @@ gitActions = function(o, packagesDir, debug, gitOptions = gitOptionsDefault) {
 	}
 }
 
+installTests = function(o, packageDir, loadTestMe = FALSE) {
+	if (loadTestMe) Require('testme');
+	if (is.null(rget('installPackageTests', NULL))) {
+		Log('Package testme not available, skipping tests creation', 1);
+		return(NULL);
+	}
+	installPackageTests(packageDir, o$testing$tests, createReference = TRUE);
+
+}
+
 createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	doInstall = FALSE, debug = F, gitOptions = list()) {
 	if (debug) print(o);
@@ -157,6 +167,8 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	writeFile(with(o, Sprintf('%{pdir}s/NEWS')), firstDef(o$description$news, '0.1-0	Initial release'));
 	writeFile(with(o, Sprintf('%{pdir}s/DESCRIPTION')), packageDescription(o));
 
+	# <p> testing
+	if (notE(o$testing) && o$testing$doInstall) installTests(o, packageDir);
 	# <p> roxigen2
 	Library(c('roxygen2', 'devtools'));
 	#document(packageDir, roclets = c('namespace', 'rd'));
@@ -191,6 +203,18 @@ probeDefinition = function(desc, dir = NULL) {
 	return(o);
 }
 
+checkPackage = function(packageDesc, packagesDir) {
+	packageDir = Sprintf("%{packagesDir}s/%{n}s", n = packageDesc$name);
+	if (file.exists(Sprintf("%{packageDir}s/.git"))) {
+		tmpDir = Sprintf('%{t}s/%{name}s', t = tempdir(), name = packageDesc$name);
+		dir.create(tmpDir, FALSE);
+		SystemS('cd %{packageDir}q ; git archive --format tar HEAD | ( cd %{tmpDir}q ; tar xf - )', 2);
+		packageDir = tmpDir;
+		
+	}
+	SystemS('R CMD build %{packageDir}q ; R CMD check %{packageDir}q', 2);
+}
+
 #' Create package from vector of source files and single configuration
 #' 
 #' This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.
@@ -204,6 +228,7 @@ probeDefinition = function(desc, dir = NULL) {
 #'	used for parsing, coming from packages \code{package}, \code{jsonlite}, and \code{yaml}.
 #' @param packageDir folder in which the folder structure of the package is written
 #' @param doInstall flag to indicate whether the package should also be installed
+#' @param doCheck whether to run R CMD check --cran on the package
 #' @section This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.
 #'	All R-files listed are copied to this directory and documentation is created by  
 #'	running the \code{devtools::document} function on this folder. details: \itemize{
@@ -279,8 +304,10 @@ probeDefinition = function(desc, dir = NULL) {
 #'
 #' @export createPackage
 createPackage = function(packageDesc, packagesDir = '~/src/Rpackages',
-	dir = NULL, doInstall = FALSE, gitOptions = list()) {
+	dir = NULL, doInstall = FALSE, doCheck = T, gitOptions = list()) {
 	packageDef = probeDefinition(packageDesc, dir);
 	#print(packageDef);
-	return(createPackageWithConfig(packageDef, packagesDir, doInstall, gitOptions = gitOptions));
+	r = createPackageWithConfig(packageDef, packagesDir, doInstall, gitOptions = gitOptions);
+	if (doCheck) checkPackage(packageDef, packagesDir);
+	return(r);
 }
