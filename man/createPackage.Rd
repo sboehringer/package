@@ -29,7 +29,7 @@ used for parsing, coming from packages \code{package}, \code{jsonlite}, and \cod
 
 \item{doCheck}{whether to run R CMD check --cran on the package}
 
-\item{gitOption}{list with options for git interaction}
+\item{gitOptions}{list with options for git interaction}
 }
 \description{
 This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.

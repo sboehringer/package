@@ -235,7 +235,7 @@ checkPackage = function(packageDesc, packagesDir) with (packageDesc, {
 #' @param doInstall flag to indicate whether the package should also be installed
 #' @param doCheck whether to run R CMD check --cran on the package
 #' @param dir directory to search for package definition
-#' @param gitOption list with options for git interaction
+#' @param gitOptions list with options for git interaction
 #' @section This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.
 #'	All R-files listed are copied to this directory and documentation is created by  
 #'	running the \code{devtools::document} function on this folder. details: \itemize{
