@@ -231,7 +231,7 @@ checkPackage = function(packageDesc, packagesDir) with (packageDesc, {
 #'	If a propertyList/JSON/YAML-file is provided, they have to parse into a list corresponding to
 #'	`packageDefinition`. Functions \code{propertyFromStringExt}, \code{read_json}, and \code{read_yaml} are
 #'	used for parsing, coming from packages \code{package}, \code{jsonlite}, and \code{yaml}.
-#' @param packageDir folder in which the folder structure of the package is written
+#' @param packagesDir folder in which the folder structure of the package is written
 #' @param doInstall flag to indicate whether the package should also be installed
 #' @param doCheck whether to run R CMD check --cran on the package
 #' @section This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.

@@ -21,11 +21,11 @@ If a propertyList/JSON/YAML-file is provided, they have to parse into a list cor
 `packageDefinition`. Functions \code{propertyFromStringExt}, \code{read_json}, and \code{read_yaml} are
 used for parsing, coming from packages \code{package}, \code{jsonlite}, and \code{yaml}.}
 
+\item{packagesDir}{folder in which the folder structure of the package is written}
+
 \item{doInstall}{flag to indicate whether the package should also be installed}
 
 \item{doCheck}{whether to run R CMD check --cran on the package}
-
-\item{packageDir}{folder in which the folder structure of the package is written}
 }
 \description{
 This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.
