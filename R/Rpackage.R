@@ -26,7 +26,7 @@ packageDefinition = list(
 # Imports
 #' @import compare
 #' @import methods
-#' @import roxigen2
+#' @import roxygen2
 #' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames" "optimize" "sd"
 #' @importFrom "utils" "read.table" "recover" "write.table"
 
