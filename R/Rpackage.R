@@ -13,7 +13,7 @@ packageDefinition = list(
 		author = 'Stefan B\uf6hringer <r-packages@s-boehringer.org>',
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools', 'methods'),
-		suggests = c('jsonlite', 'yaml'),
+		suggests = c('testme', 'jsonlite', 'yaml'),
 		news = "0.5-0	Error free CRAN check. Warnings left.\n0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release"
 	),
 	git = list(

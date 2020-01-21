@@ -20,6 +20,7 @@ Collate:
     Rfunctions.R
     Rpackage.R
 Suggests: 
+    testme,
     jsonlite,
     yaml
 RoxygenNote: 7.0.1
