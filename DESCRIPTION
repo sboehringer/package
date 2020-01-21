@@ -17,6 +17,7 @@ Collate:
     Rmeta.R
     Rdata.R
     Rsystem.R
+    Rfunctions.R
     Rpackage.R
 Suggests: 
     jsonlite,
