@@ -23,7 +23,7 @@ packageDefinition = list(
 		remote = 'https://github.com/sboehringer/package.git'
 	)
 );
-#' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames"
+#' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames" "optimize" "sd"
 #' @importFrom "utils" "read.table" "recover" "write.table"
 
 #__PACKAGE_DOC__
