@@ -18,6 +18,7 @@ Collate:
     Rdata.R
     Rsystem.R
     Rfunctions.R
+    RpropertyList.R
     Rpackage.R
 Suggests: 
     testme,

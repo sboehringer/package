@@ -4,7 +4,7 @@
 
 packageDefinition = list(
 	name = 'package',
-	files = c('Rmeta.R', 'Rdata.R', 'Rsystem.R', 'Rfunctions.R'),
+	files = c('Rmeta.R', 'Rdata.R', 'Rsystem.R', 'Rfunctions.R', 'RpropertyList.R'),
 	instFiles = list(Rscripts = 'Dev/pkg-minimal.R'),
 	description = list(
 		title = 'Create packages from R-code directly',
