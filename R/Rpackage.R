@@ -23,6 +23,10 @@ packageDefinition = list(
 		remote = 'https://github.com/sboehringer/package.git'
 	)
 );
+# Imports
+#' @import compare
+#' @import methods
+#' @import roxigen2
 #' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames" "optimize" "sd"
 #' @importFrom "utils" "read.table" "recover" "write.table"
 
