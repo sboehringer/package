@@ -26,6 +26,7 @@ packageDefinition = list(
 # Imports
 #' @import methods
 #' @import roxygen2
+#' @import devtools
 #' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames" "optimize" "sd"
 #' @importFrom "utils" "read.table" "recover" "write.table"
 globalVariables(c('valueMapperStandard'))
