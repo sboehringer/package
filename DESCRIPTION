@@ -23,6 +23,5 @@ Collate:
 Suggests: 
     testme,
     jsonlite,
-    yaml,
-    testme
+    yaml
 RoxygenNote: 7.0.1
