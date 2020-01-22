@@ -29,6 +29,7 @@ packageDefinition = list(
 #' @import devtools
 #' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames" "optimize" "sd"
 #' @importFrom "utils" "read.table" "recover" "write.table"
+#' @importFrom "yaml" "read_yaml"
 globalVariables(c('valueMapperStandard'))
 
 #__PACKAGE_DOC__
