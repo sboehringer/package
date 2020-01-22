@@ -29,7 +29,7 @@ packageDefinition = list(
 #' @import devtools
 #' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames" "optimize" "sd"
 #' @importFrom "utils" "read.table" "recover" "write.table"
-globalVariables(c('valueMapperStandard', 'requireNamespace', 'read_yaml', 'read_json'))
+globalVariables(c('valueMapperStandard', 'read_yaml', 'read_json'))
 
 #__PACKAGE_DOC__
 # This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone configuration file, providing full flexibility. It can also handle git interaction. This package is created with itself and you can look at the single R-file `Rpackage.R` for a self-referring example.
@@ -203,8 +203,8 @@ probeDefinition = function(desc, dir = NULL) {
 			def = get('packageDefinition', envir = myEnv);
 			def$files = unique(c(def$files, desc)); def }),
 		plist = propertyFromStringExt(readFile(path)),
-		json = ({ requireNamespcae('jsonlite'); read_json(path) }),
-		yaml = ({ requireNamespcae('yaml'); read_yaml(path) })
+		json = ({ requireNamespace('jsonlite'); read_json(path) }),
+		yaml = ({ requireNamespace('yaml'); read_yaml(path) })
 	);
 	o$dir = firstDef(dir, sp$dir);
 	o$version = firstDef(o$description$version, Regexpr('\\S+', o$description$news)[[1]], '0.1-0');
