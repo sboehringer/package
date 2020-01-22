@@ -595,6 +595,27 @@ Do.call = function(what, args, quote = FALSE, envir = parent.frame(),
 #	<p> file operations
 #
 
+Source_url = function(url, ...) {
+	requireNamespace('RCurl');
+	request = getURL(url, followlocation = TRUE,
+		cainfo = system.file("CurlSSL", "cacert.pem", package = "RCurl"));
+	tf = tempfile();
+	writeFile(tf, request);
+    source(tf, ...)
+}
+
+# <!> local = T does not work
+Source = function(file, ...,
+	locations = c('', '.', sprintf('%s/src/Rscripts', Sys.getenv('HOME'))),
+	envir = NULL) {
+	sapply(file, function(file) {
+		if (isURL(file)) Source_url(file, ...) else {
+		file0 = file.locate(file, prefixes = locations);
+			if (notE(envir)) sys.source(file = file0, envir = envir, ...) else source(file = file0, ...)
+		}
+	})
+}
+
 # <A> overlap with Source; avoid dependecy with RCurl
 SourceLocal = function(file, ...,
 	locations = c('', '.', sprintf('%s/src/Rscripts', Sys.getenv('HOME'))),
