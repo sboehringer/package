@@ -13,7 +13,7 @@ packageDefinition = list(
 		author = 'Stefan B\uf6hringer <r-packages@s-boehringer.org>',
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools', 'methods'),
-		suggests = c('testme', 'jsonlite', 'yaml'),
+		suggests = c('testme', 'jsonlite', 'yaml', 'testme'),
 		news = "0.5-1	Resolved documentation\n0.5-0	Error free CRAN check. Warnings left.\n0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release"
 	),
 	git = list(
@@ -29,7 +29,7 @@ packageDefinition = list(
 #' @import devtools
 #' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames" "optimize" "sd"
 #' @importFrom "utils" "read.table" "recover" "write.table"
-globalVariables(c('valueMapperStandard', 'read_yaml', 'read_json'))
+globalVariables(c('valueMapperStandard', 'requireNamespace', 'read_yaml', 'read_json'))
 
 #__PACKAGE_DOC__
 # This package allows you to create a fully-fledged R-package from a single R-file reducing the added work-load for maintaining a package to a minimum. Depending on the project, collections of files can be used and configuration can be seperated into a stand-alone configuration file, providing full flexibility. It can also handle git interaction. This package is created with itself and you can look at the single R-file `Rpackage.R` for a self-referring example.
@@ -113,12 +113,12 @@ gitActions = function(o, packagesDir, debug, gitOptions = gitOptionsDefault) {
 }
 
 installTests = function(o, packageDir, loadTestMe = FALSE) {
-	if (loadTestMe) Require('testme');
+	if (loadTestMe) requireNamespace('testme');
 	if (is.null(rget('installPackageTests', NULL))) {
 		Log('Package testme not available, skipping tests creation', 1);
 		return(NULL);
 	}
-	installPackageTests(packageDir, o$testing$tests, createReference = TRUE);
+	testme::installPackageTests(packageDir, o$testing$tests, createReference = TRUE);
 
 }
 
