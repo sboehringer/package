@@ -199,7 +199,8 @@ probeDefinition = function(desc, dir = NULL) {
 		# <!> assume unique is stable
 		R = ({
 			myEnv = new.env();
-			Source(desc, local = myEnv);
+			# <N> instead of Source: avoid RCurl dependency
+			SourceLocal(desc, local = myEnv);
 			def = get('packageDefinition', envir = myEnv);
 			def$files = unique(c(def$files, desc)); def }),
 		plist = propertyFromStringExt(readFile(path)),
