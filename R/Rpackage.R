@@ -203,8 +203,8 @@ probeDefinition = function(desc, dir = NULL) {
 			def = get('packageDefinition', envir = myEnv);
 			def$files = unique(c(def$files, desc)); def }),
 		plist = propertyFromStringExt(readFile(path)),
-		json = ({ require('jsonlite'); read_json(path) }),
-		yaml = ({ require('yaml'); read_yaml(path) })
+		json = ({ requireNamespcae('jsonlite'); read_json(path) }),
+		yaml = ({ requireNamespcae('yaml'); read_yaml(path) })
 	);
 	o$dir = firstDef(dir, sp$dir);
 	o$version = firstDef(o$description$version, Regexpr('\\S+', o$description$news)[[1]], '0.1-0');
