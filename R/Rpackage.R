@@ -177,7 +177,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	# <p> testing
 	if (notE(o$testing) && o$testing$doInstall) installTests(o, packageDir);
 	# <p> roxigen2
-	Library(c('roxygen2', 'devtools'));
+	#Library(c('roxygen2', 'devtools'));
 	#document(packageDir, roclets = c('namespace', 'rd'));
 	#document(packageDir, roclets = c('rd'));
 	#roxygenize(packageDir, roclets = c('rd'), clean = TRUE);
