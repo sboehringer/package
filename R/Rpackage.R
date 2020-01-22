@@ -27,6 +27,7 @@ packageDefinition = list(
 #' @import methods
 #' @import roxygen2
 #' @import devtools
+#' @import yaml
 #' @importFrom "stats" "as.formula" "median" "model.matrix" "na.omit" "runif" "setNames" "optimize" "sd"
 #' @importFrom "utils" "read.table" "recover" "write.table"
 #' @importFrom "yaml" "read_yaml"
