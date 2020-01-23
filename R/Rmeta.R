@@ -484,7 +484,7 @@ freezeObject = function(object, env) {
 	dir = attr(env, 'path');
 	name = names(object);
 	file = Sprintf('%{dir}s/%{name}s.Rdata');
-print(file);
+	#print(file);
 	save(list = name, envir = as.environment(object), file = file);
 	eval(substitute(delayedAssign(OBJECT, get(load(file = FILE)[1])),
 		list(OBJECT = name, FILE = file)), envir = env);
