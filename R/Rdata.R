@@ -409,6 +409,7 @@ RegexprSingle = function(re, s, captures = F, global = T, simplify = T, concatMa
 	#matches = if (global) gregexpr(re, s, perl = T) else list(regexpr(re, s, perl = T));
 	r = pairslapply(matches, s, function(m, s) {	# iterate strings
 		if (captures) {
+print(m)
 			r = matchRegexCapture(m, s);
 			if (concatMatches) r = apply(do.call(cbind, r), 1, join, sep = '');
 		} else {
@@ -417,7 +418,6 @@ RegexprSingle = function(re, s, captures = F, global = T, simplify = T, concatMa
 		}
 		r
 	});
-print(r)
 	if (simplify && (
 		(length(s) == 1 && captures && concatMatches)
 	)) r = r[[1]];
