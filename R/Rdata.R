@@ -417,6 +417,7 @@ RegexprSingle = function(re, s, captures = F, global = T, simplify = T, concatMa
 		}
 		r
 	});
+print(r)
 	if (simplify && (
 		(length(s) == 1 && captures && concatMatches)
 	)) r = r[[1]];

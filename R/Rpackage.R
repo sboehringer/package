@@ -134,8 +134,11 @@ installVignettes = function(o, packageDir) {
 	lapply(o$description$vignettes, function(path) {
 		v = readFile(path);
 		cat(v);
-		#m = Regexpr("(?s)---\\n(?:(?<key>[a-z]\\s*):\\s*(?<value>[^\\n]*\n\\S+)\\n)+---\\n", v, captures = T);
-		m = Regexpr("(?s)---\\n(?:(?<key>[a-z]\\s*):)", v, captures = T);
+		#m = Regexpr("(?s)---\\n(?:(?<key>[a-z]\\S*)\\s*:\\s*(?<value>[^\\n]*\n\\S+)\\n)+---\\n", v, captures = T);
+		m = Regexpr("(?six)^---\\n
+		(?: (?<key>[a-z]\\S*)\\s*:\\s*
+			(?<value> [^\\n]+\\n (?:[ \\t][^\\n]+\\n)* )
+		)+---\\n", v, captures = T, concatMatches = F, global = T, simplify = F);
 		print(m);
 	})
 }
