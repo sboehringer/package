@@ -133,6 +133,7 @@ vignetteDefaultKeys = list(
 installVignettes = function(o, packageDir) {
 	lapply(o$description$vignettes, function(path) {
 		v = readFile(path);
+		print(v);
 		m = Regexpr("(?s)---(?:(?<key>[a-z]\\s*):\\s*(?<value>[^\\n]*\n\\S+)\\n)+---", v);
 		#m = Regexpr("(?s)---(?:(?<key>[a-z]\\s*):\\s*)", v);
 		print(m);
