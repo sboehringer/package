@@ -15,7 +15,8 @@ packageDefinition = list(
 		depends = c('roxygen2', 'devtools', 'methods'),
 		suggests = c('testme', 'jsonlite', 'yaml'),
 		news = "0.6-0	Clean CRAN check\n0.5-1	Resolved documentation\n0.5-0	Error free CRAN check. Warnings left.\n0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
-		license = 'LGPL-2'
+		license = 'LGPL-2',
+		vignettes = "vignettes/vignette-package.Rmd"
 	),
 	git = list(
 		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("sboehringer/package")\n```\n',
@@ -123,6 +124,21 @@ installTests = function(o, packageDir, loadTestMe = FALSE) {
 
 }
 
+vignetteDefaultKeys = list(
+	date = "`r Sys.Date()`",
+	output = "rmarkdown::html_vignette",
+	vignette =  ">\n  %\\VignetteIndexEntry{Vignette Title}\n  %\\VignetteEngine{knitr::rmarkdown}\n  \\usepackage[utf8]{inputenc}"
+);
+
+installVignettes = function(o, packageDir) {
+	lapply(o$description$vignettes, function(path) {
+		v = readFile(path);
+		#m = Regexpr("(?sg)---(?:(?<key>[a-z]\\s*):\\s*(?<value>[^\\n]*\n\\S+)\\n)+---", v);
+		m = Regexpr("---(?:(?<key>[a-z]\\s*):\\s*)", v);
+		print(m);
+	})
+}
+
 createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	doInstall = FALSE, debug = F, gitOptions = list()) {
 	if (debug) print(o);
@@ -183,6 +199,9 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	#document(packageDir, roclets = c('rd'));
 	#roxygenize(packageDir, roclets = c('rd'), clean = TRUE);
 	roxygenize(packageDir, clean = TRUE);
+
+	# <p> vignettes
+	if (notE(o$description$vignettes)) installVignettes(o, packagesDir);
 
 	# <p> git
 	if (notE(o$git)) gitActions(o, packagesDir, debug, gitOptions);
