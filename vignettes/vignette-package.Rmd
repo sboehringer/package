@@ -6,6 +6,7 @@ vignette: >
   %\VignetteIndexEntry{Package documentation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+keep_md: TRUE
 author: Stefan Böhringer <r-packages@s-boehringer.org>
 ---
 
