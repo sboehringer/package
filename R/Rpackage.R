@@ -172,7 +172,7 @@ installVignette = function(path, o, packageDir, noGit = F) {
 }
 installVignettes = function(o, packageDir) {
 	lapply(o$description$vignettes, installVignette, o = o, packageDir = packageDir);
-	build_vignettes(packageDir);
+	build_vignettes(packageDir, keep_md = TRUE);
 }
 
 createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
