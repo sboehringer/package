@@ -14,7 +14,7 @@ packageDefinition = list(
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools', 'methods'),
 		suggests = c('testme', 'jsonlite', 'yaml'),
-		news = "0.6-0	Clean CRAN check\n0.5-1	Resolved documentation\n0.5-0	Error free CRAN check. Warnings left.\n0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
+		news = "0.7-0	Vignette building. Started vignette for package `package\n0.6-0	Clean CRAN check\n0.5-1	Resolved documentation\n0.5-0	Error free CRAN check. Warnings left.\n0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
 		license = 'LGPL-2',
 		vignettes = "vignettes/vignette-package.Rmd"
 	),
@@ -48,10 +48,15 @@ packageDocPrefix = "# This is package `%{name}s`\n#\n# %{title}s\n#\n# @details\
 #packageDocPrefix = "# This is package `%{name}s`\n#\n# @details\n# %{description}s\n#\n";
 packageReadmeTemplate = "# R-package `%{PACKAGE_NAME}s`, version %{VERSION}s\n%{README}s\n# Description\n%{DESCRIPTION}s";
 
-packageDescTemplate = "Package: %{PACKAGE_NAME}s\nType: %{TYPE}s\nTitle: %{TITLE}s\nVersion: %{VERSION}s\nDate: %{DATE}s\nAuthor: %{AUTHOR}s\nMaintainer: %{MAINTAINER}s\nDescription: %{DESCRIPTION}s\nLicense: %{LICENSE}s\nEncoding: %{ENCODING}s\nDepends: %{DEPENDS}s\nCollate: %{COLLATE}s\nSuggests: %{SUGGESTS}s\n";
+packageDescTemplate = "Package: %{PACKAGE_NAME}s\nType: %{TYPE}s\nTitle: %{TITLE}s\nVersion: %{VERSION}s\nDate: %{DATE}s\nAuthor: %{AUTHOR}s\nMaintainer: %{MAINTAINER}s\nDescription: %{DESCRIPTION}s\nLicense: %{LICENSE}s\nEncoding: %{ENCODING}s\nDepends: %{DEPENDS}s\nCollate: %{COLLATE}s\nSuggests: %{SUGGESTS}s\n%{ADDITIONS}s";
 
 packageInterpolationDict = function(o, debug = F) {
 	d = o$description;
+	additions = '';
+	if (length(d$vignettes) > 0) {
+		o$description$suggests = unique(c(o$description$suggests, c('knitr', 'rmarkdown')));
+		additions = paste0(additions,  "VignetteBuilder: knitr\n");
+	}
 	vars = list(
 		PACKAGE_NAME = o$name,
 		TYPE = firstDef(d$type, 'Package'),
@@ -66,7 +71,8 @@ packageInterpolationDict = function(o, debug = F) {
 		COLLATE = circumfix(join(sapply(o$files, function(f)splitPath(f)$file), "\n    "), pre = "\n    "),
 		DEPENDS = circumfix(join(d$depends, ",\n    "), pre = "\n    "),
 		SUGGESTS = circumfix(join(d$suggests, ",\n    "), pre = "\n    "),
-		README = firstDef(o$git$readme, '')
+		README = firstDef(o$git$readme, ''),
+		ADDITIONS = additions
 	);
 	if (debug) print(vars);
 	return(vars);
@@ -124,23 +130,49 @@ installTests = function(o, packageDir, loadTestMe = FALSE) {
 
 }
 
+# <N> values are interpolated by Sprintf, '%' -> '%%'
 vignetteDefaultKeys = list(
-	date = "`r Sys.Date()`",
+	title = 'Package Documentation',
+	date = '"`r Sys.Date()`"',
 	output = "rmarkdown::html_vignette",
-	vignette =  ">\n  %\\VignetteIndexEntry{Vignette Title}\n  %\\VignetteEngine{knitr::rmarkdown}\n  \\usepackage[utf8]{inputenc}"
+	vignette =  ">\n  %%\\VignetteIndexEntry{%{title}s}\n  %%\\%{Vignette}sEngine{knitr::rmarkdown}\n  %%\\%{Vignette}sEncoding{UTF-8}"
 );
 
+popcharif = function(s, char = "\n") {
+	N = nchar(s);
+	if (N == 0) return(s);
+	if (substr(s, N, N) == char) return(substr(s, 1, N -1));
+	return(s);
+}
+
+installVignette = function(path, o, packageDir, noGit = F) {
+	v = readFile(path);
+	cat(v);
+	m0 = unlist(Regexpr("(?six)^---\\n+
+	((?:
+		(?:\\S*)[\\t ]*:[\\t ]*
+		(?:[^\\n]+\\n (?:[ \\t]+[^\\n]+\\n)* ) \\n*
+	)+)---\\n(.*)", v, captures = T, concatMatches = F));
+	dictR0 = Regexpr("(?six)
+		(?<key>[a-z]\\S*)[\\t ]*:[\\t ]*
+		(?<value> [^\\n]+\\n (?:[ \\t]+[^\\n]+\\n)* ) \\n*
+	", m0[1], captures = T, concatMatches = F, global = T);
+	dictR1 = list.transpose(dictR0[[1]]);
+	dictR2 = listKeyValue(list.kp(dictR1, 'key'), sapply(list.kp(dictR1, 'value'), popcharif));
+	dict = merge.lists(vignetteDefaultKeys, list(author = o$description$author), dictR2);
+	meta = Sprintf(join(nelapply(dict, function(n, e)Sprintf('%{n}s: %{e}s')), "\n"),
+		c(dict, list(Vignette = 'Vignette')));	#<!> hack to avoid warning
+	vignette = m0[2];
+	Rmd = Sprintf('---\n%{meta}s\n---\n%{vignette}s');
+	writeFile(Sprintf('%{packageDir}s/vignettes/%{file}s', splitPath(path)), Rmd, mkpath = T);
+	if (!noGit) {
+		ignore = Sprintf('%{packageDir}s/vignettes/.gitignore');
+		if (!file.exists(ignore)) writeFile(ignore, "vignettes/*.html\nvignettes/*.R\n");
+	}
+}
 installVignettes = function(o, packageDir) {
-	lapply(o$description$vignettes, function(path) {
-		v = readFile(path);
-		cat(v);
-		#m = Regexpr("(?s)---\\n(?:(?<key>[a-z]\\S*)\\s*:\\s*(?<value>[^\\n]*\n\\S+)\\n)+---\\n", v, captures = T);
-		m = Regexpr("(?six)^---\\n
-		(?: (?<key>[a-z]\\S*)\\s*:\\s*
-			(?<value> [^\\n]+\\n (?:[ \\t][^\\n]+\\n)* )
-		)+---\\n", v, captures = T, concatMatches = F, global = T, simplify = F);
-		print(m);
-	})
+	lapply(o$description$vignettes, installVignette, o = o, packageDir = packageDir);
+	build_vignettes(packageDir);
 }
 
 createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
@@ -205,7 +237,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	roxygenize(packageDir, clean = TRUE);
 
 	# <p> vignettes
-	if (notE(o$description$vignettes)) installVignettes(o, packagesDir);
+	if (notE(o$description$vignettes)) installVignettes(o, packageDir);
 
 	# <p> git
 	if (!noGit && notE(o$git)) gitActions(o, packagesDir, debug, gitOptions);
@@ -264,14 +296,11 @@ checkPackage = function(packageDesc, packagesDir) with (packageDesc, {
 #' @param dir directory to search for package definition
 #' @param gitOptions list with options for git interaction
 #' @param noGit boolean to suppress git calls, overwrites other options
-#' @section This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.
+#'
+#' @details This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.
 #'	All R-files listed are copied to this directory and documentation is created by  
-#'	running the \code{devtools::document} function on this folder. details: \itemize{
-#' \item Be prepared, as in: \code{f0 =
-#' f1 = function(){42}; parallelize(f0); parallelize(f1);}
-#' \item Be extra prepared
-#' }
-#' @details The package is specified through a list coming from an R script or configuration file.
+#'	running the \code{devtools::document} function on this folder.
+#' The package is specified through a list coming from an R script or configuration file.
 #'	The following elements control package generation. In this list \code{key1-key2} indicates a
 #'	sublist-element, i.e. it stand for \code{packageDefinition[[key1]][[key2]]}.
 #'	

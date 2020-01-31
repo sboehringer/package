@@ -1,0 +1,4 @@
+vignettes/*.html
+vignettes/*.R
+*.html
+*.R

@@ -38,6 +38,9 @@ used for parsing, coming from packages \code{package}, \code{jsonlite}, and \cod
 This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.
 }
 \details{
+This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.
+All R-files listed are copied to this directory and documentation is created by  
+running the \code{devtools::document} function on this folder.
 The package is specified through a list coming from an R script or configuration file.
 The following elements control package generation. In this list \code{key1-key2} indicates a
 sublist-element, i.e. it stand for \code{packageDefinition[[key1]][[key2]]}.

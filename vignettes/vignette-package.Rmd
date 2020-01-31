@@ -1,0 +1,31 @@
+---
+title: Package documentation
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Package documentation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+author: Stefan Böhringer <r-packages@s-boehringer.org>
+---
+
+# Purpose of the package
+
+This package is meant to allow the development of ad-hoc packages in a couple of minutes. All that is needed is a single R `list` that defines project properties and is typically 20-30 lines long. Here is an exmaple:
+
+```{r}
+packageDefinition = list(
+	name = 'pkg-minimal',
+	description = list(
+			title = 'Minimal R-package created with `package`',
+			author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
+			description = 'This appears in the package-documentaion, the markdown of the git-repository and in the package details.',
+			depends = c(),
+			suggests = c(),
+			license = 'LGPL',
+			news = "0.1-0   Initial release"
+	)
+);
+```
+
+The description key contains a list with information that goes into the `DESCRIPTION` file of the R-package.

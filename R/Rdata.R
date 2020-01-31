@@ -324,8 +324,9 @@ matchRegexCapture = function(reg, str, pos = NULL) {
 	if (is.null(attr(reg, 'capture.start'))) return(NULL);
 	if (!is.null(pos)) str = str[pos] else pos = seq_along(reg);
 	captures = lapply(1:ncol(attr(reg, 'capture.start')), function(i) {
-		sapply(pos, function(j)Substr(str,
+		vs = sapply(pos, function(j)Substr(str,
 			attr(reg, 'capture.start')[j, i], attr(reg, 'capture.length')[j, i]))
+		vs
 	});
 	names(captures) = attr(reg, 'capture.names');
 	captures
@@ -396,6 +397,8 @@ As.list = function(v) {
 	l
 }
 
+# transform results from Regexpr captures = T
+list.transpose = function(l)lapply(seq_along(l[[1]]), function(i)list.kp(l, Sprintf('[[%{i}d]]')));
 
 # interface as of 2018/06
 # if re is vector, iterate over
@@ -409,7 +412,6 @@ RegexprSingle = function(re, s, captures = F, global = T, simplify = T, concatMa
 	#matches = if (global) gregexpr(re, s, perl = T) else list(regexpr(re, s, perl = T));
 	r = pairslapply(matches, s, function(m, s) {	# iterate strings
 		if (captures) {
-print(m)
 			r = matchRegexCapture(m, s);
 			if (concatMatches) r = apply(do.call(cbind, r), 1, join, sep = '');
 		} else {
@@ -631,12 +633,27 @@ Sprintfl = function(.fmt, values, sprintf_cartesian = FALSE, envir = parent.fram
 # 	)';
 	# <!> new, untested regexpr as of 22.5.2014
 	# un-interpolated formats do no longer work
+# 	re = '(?xs)(?:
+# 		(?:[^%]+|(?:%%)+)*\\K
+# 		[%]
+# 			(?:[{]([^{}\\*\'"]*)[}])?
+# 		((?:[-]?[*\\d]*[.]?[*\\d]*)?(?:[sdfegGDQqu]|))(?=[^sdfegGDQqu]|$)
+# 	)';
+
 	re = '(?xs)(?:
-		(?:[^%]+|(?:%%)+)*\\K
-		[%]
+		(?:[^%]+|(?:%%)+)*
+		\\K[%]
 			(?:[{]([^{}\\*\'"]*)[}])?
 		((?:[-]?[*\\d]*[.]?[*\\d]*)?(?:[sdfegGDQqu]|))(?=[^sdfegGDQqu]|$)
 	)';
+
+# 	re = '(?xs)(?:
+# 		(?:(?:[^%]+)(?:(?:%%)+(?:[^%]+))*)
+# 		[%]
+# 			(?:[{]([^{}\\*\'"]*)[}])?
+# 		((?:[-]?[*\\d]*[.]?[*\\d]*)?(?:[sdfegGDQqu]|))(?=[^sdfegGDQqu]|$)
+# 	)';
+
 	r = fetchRegexpr(re, .fmt, capturesAll = T, returnMatchPositions = T);
 	r = sprintfIgnoreEscapes(r);
 	# <p> nothing to format
@@ -2332,8 +2349,9 @@ Df_ = function(df0, headerMap = NULL, names = NULL, min_ = NULL,
 	#
 #if (class(df0) == 'data.frame' && ncol(df0) >= 3) browser();
 	if (notE(as_numeric)) {
-		dfn = apply(r[, as_numeric, drop = F], 2, function(col)as.numeric(avu(col)));
-		r[, as_numeric] = as.data.frame(dfn);
+		#dfn = apply(r[, as_numeric, drop = F], 2, function(col)as.numeric(avu(col)));
+		dfn = lapply(r[, as_numeric, drop = F], function(col)avu(as.numeric(col)));
+		r[, as_numeric] = as.data.frame(do.call(cbind, dfn));
 	}
 	if (notE(as_logical)) r = DfAsLogical(r, as_logical);
 	if (notE(as_integer)) r = DfAsInteger(r, as_integer);
@@ -2424,6 +2442,15 @@ DfRepl = function(d0, d1) {
 	d0[, names(d1)] = d1;
 	return(d0);
 }
+
+DfRound = function(df0, cols_round = names(df0), digits = 2, as_numeric = F) {
+	rounder = if (as_numeric)
+		function(col)round(as.numeric(df0[[col]]), digits) else
+		function(col)round(df0[[col]], digits)
+	df0[, cols_round] = do.call(cbind, lapply(cols_round, rounder));
+	df0
+}
+
 
 # standardize df names using formulas
 dfNmsStd = function(f, nmsStd, d) {
