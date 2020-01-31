@@ -53,3 +53,10 @@ myLittlePony = function() {
 }
 ```
 
+# Git use
+
+# Creating Releases
+
+# Supporting files
+
+# Vignettes
