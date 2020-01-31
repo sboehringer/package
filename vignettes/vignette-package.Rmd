@@ -29,4 +29,27 @@ packageDefinition = list(
 );
 ```
 
-The description key contains a list with information that goes into the `DESCRIPTION` file of the R-package.
+The description key contains a list with information that goes into the `DESCRIPTION` file of the R-package. Apart from this the file (or another one) should contain the functions you want to put into the package. For example:
+
+```{r}
+#' Subject yourself to a message
+#' 
+#' This function will subject yourself to a message [no escape]
+#' 
+#' @aliases myLittlePony
+#' @section Important details: \itemize{
+#' \item Be prepared, as in: \code{f0 =
+#' f1 = function(){42}; parallelize(f0); parallelize(f1);}
+#' \item Be extra prepared
+#' }
+#' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
+#' @examples
+#' 
+#' myLittlePony()
+#'
+#' @export myLittlePony
+myLittlePony = function() {
+	print('this is pateta');
+}
+```
+
