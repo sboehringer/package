@@ -33,14 +33,8 @@ The description key contains a list with information that goes into the `DESCRIP
 ```{r}
 #' Subject yourself to a message
 #' 
-#' This function will subject yourself to a message [no escape]
+#' This function will subject yourself to a message
 #' 
-#' @aliases myLittlePony
-#' @section Important details: \itemize{
-#' \item Be prepared, as in: \code{f0 =
-#' f1 = function(){42}; parallelize(f0); parallelize(f1);}
-#' \item Be extra prepared
-#' }
 #' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
 #' @examples
 #' 
