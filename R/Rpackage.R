@@ -13,7 +13,7 @@ packageDefinition = list(
 		author = 'Stefan B\uf6hringer <r-packages@s-boehringer.org>',
 		description = 'This package simplifies package generation by automating the use of `devtools` and `roxygen`. It also makes the development workflow more efficient by allowing ad-hoc development of packages. Use `?"package-package"` for a tutorial.',
 		depends = c('roxygen2', 'devtools', 'methods'),
-		suggests = c('testme', 'jsonlite', 'yaml'),
+		suggests = c('testme', 'jsonlite', 'yaml', 'knitr'),
 		news = "0.7-0	Vignette building. Started vignette for package `package`\n0.6-0	Clean CRAN check\n0.5-1	Resolved documentation\n0.5-0	Error free CRAN check. Warnings left.\n0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
 		license = 'LGPL-2',
 		vignettes = "vignettes/vignette-package.Rmd"
@@ -135,8 +135,8 @@ vignetteDefaultKeys = list(
 	title = 'Package Documentation',
 	date = '"`r Sys.Date()`"',
 	vignette =  ">\n  %%\\VignetteIndexEntry{%{title}s}\n  %%\\%{Vignette}sEngine{knitr::rmarkdown}\n  %%\\%{Vignette}sEncoding{UTF-8}",
-	#output = "rmarkdown::html_vignette"
-	output = "\n  html_document:\n    keep_md: TRUE"
+	output = "rmarkdown::html_vignette"
+	#output = "\n  html_document:\n    keep_md: TRUE"
 	#output = "\n  rmarkdown::html_vignette:\n    keep_md: TRUE"
 );
 
@@ -172,10 +172,22 @@ installVignette = function(path, o, packageDir, noGit = F) {
 		if (!file.exists(ignore)) writeFile(ignore, "vignettes/*.html\nvignettes/*.R\n");
 	}
 }
-installVignettes = function(o, packageDir) {
+
+build_vignettes_to_md = function(o, packageDir) {
+	lapply(o$description$vignettes, function(p){
+		sp = splitPath(p);
+		knitr::knit(
+			Sprintf('%{packageDir}s/vignettes/%{file}s', sp),
+			Sprintf('%{packageDir}s/doc/%{base}s.md', sp)
+		);
+	});
+}
+
+installVignettes = function(o, packageDir, keep_md = TRUE) {
 	lapply(o$description$vignettes, installVignette, o = o, packageDir = packageDir);
-browser();
-	build_vignettes(packageDir, keep_md = TRUE);
+	# keep_md = T does not seem to work, even in conjunction with a markdown parameter -> workaround
+	build_vignettes(packageDir, keep_md = FALSE);
+	if (keep_md) build_vignettes_to_md(o, packageDir);
 }
 
 createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',

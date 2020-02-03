@@ -5,9 +5,7 @@ vignette: >
   %\VignetteIndexEntry{Package documentation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-output: 
-  html_document:
-    keep_md: TRUE
+output: rmarkdown::html_vignette
 author: Stefan Böhringer <r-packages@s-boehringer.org>
 ---
 

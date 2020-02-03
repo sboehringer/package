@@ -23,6 +23,7 @@ Collate:
 Suggests: 
     testme,
     jsonlite,
-    yaml
+    yaml,
+    knitr
 VignetteBuilder: knitr
 RoxygenNote: 7.0.1
