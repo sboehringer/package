@@ -12,7 +12,7 @@ packageDefinition = list(
 		# version to be documented in news section
 		#version = '0.1-0',
 		author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
-		description = 'This appears in the package-documentaion, the markdown of the git-repository and in th e package details. This package exports a single function, \\code{myLittlePony}, which prints a surprising message.',
+		description = 'This appears in the package-documentaion, the markdown of the git-repository and in the package details. This package exports a single function, \\code{myLittlePony}, which prints a surprising message.',
 		depends = c(),
 		suggests = c(),
 		license = 'LGPL',
@@ -27,14 +27,8 @@ packageDefinition = list(
 
 #' Subject yourself to a message
 #' 
-#' This function will subject yourself to a message [no escape]
+#' This function will subject yourself to a message
 #' 
-#' @aliases myLittlePony
-#' @section Important details: \itemize{
-#' \item Be prepared, as in: \code{f0 =
-#' f1 = function(){42}; parallelize(f0); parallelize(f1);}
-#' \item Be extra prepared
-#' }
 #' @author Stefan Böhringer, \email{r-packages@@s-boehringer.org}
 #' @examples
 #' 
