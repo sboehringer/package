@@ -136,8 +136,8 @@ vignetteDefaultKeys = list(
 	date = '"`r Sys.Date()`"',
 	vignette =  ">\n  %%\\VignetteIndexEntry{%{title}s}\n  %%\\%{Vignette}sEngine{knitr::rmarkdown}\n  %%\\%{Vignette}sEncoding{UTF-8}",
 	#output = "rmarkdown::html_vignette"
-	#output = "\n  html_document:\n    keep_md: TRUE"
-	output = "\n  rmarkdown::html_vignette:\n    keep_md: TRUE"
+	output = "\n  html_document:\n    keep_md: TRUE"
+	#output = "\n  rmarkdown::html_vignette:\n    keep_md: TRUE"
 );
 
 popcharif = function(s, char = "\n") {
