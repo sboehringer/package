@@ -174,6 +174,7 @@ installVignette = function(path, o, packageDir, noGit = F) {
 }
 installVignettes = function(o, packageDir) {
 	lapply(o$description$vignettes, installVignette, o = o, packageDir = packageDir);
+browser();
 	build_vignettes(packageDir, keep_md = TRUE);
 }
 
