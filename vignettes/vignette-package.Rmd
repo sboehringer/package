@@ -61,3 +61,5 @@ myLittlePony = function() {
 # Supporting files
 
 # Vignettes
+
+Vignettes can be written in R-markdown.
