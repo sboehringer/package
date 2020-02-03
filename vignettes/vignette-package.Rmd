@@ -1,12 +1,13 @@
 ---
 title: Package documentation
 date: "`r Sys.Date()`"
-output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Package documentation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
-keep_md: TRUE
+output: 
+  html_document:
+    keep_md: TRUE
 author: Stefan Böhringer <r-packages@s-boehringer.org>
 ---
 
