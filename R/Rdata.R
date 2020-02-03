@@ -842,6 +842,7 @@ SeqRows = function(o)Seq(1, nrow(o))
 #' @param counts vector of integers specifying counts
 #' @return vector of pairs of indeces indicating the first and last element in a vector for the blocks 
 #'  specified by \code{counts}
+#' @keywords internal
 #' @examples
 #' \dontrun{
 #' count2blocks(c(1, 5, 3))
