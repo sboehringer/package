@@ -48,6 +48,33 @@ myLittlePony = function() {
 
 # Git use
 
+The package definition can be amended with a `git` section like so:
+
+```
+packageDefinition = list(
+	name = 'pkg-minimal',
+	description = list(
+			title = 'Minimal R-package created with `package`',
+			author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
+			description = 'This appears in the package-documentaion, the markdown of the git-repository and in the package details.',
+			depends = c(),
+			suggests = c(),
+			license = 'LGPL',
+			news = "0.1-0   Initial release"
+	),
+	git = list(
+		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("githubuser/pkg-minimal")\n```\n',
+		push = F,
+		pushOnNewVersion = T,
+		remote = 'https://github.com/githubuser/pkg-minimal.git'
+	)
+);
+```
+
+`readme` is a character string containing the content of the README file in markdown format. It will be literally written to the file `README.md` in the main folder of the package and is display on the homepage of the respository by sites such as github.
+`push` is a boolean to indicate whether `createPackage` should automatically push the local source tree.
+`remote` is the URL of the remote git server to be pushed to.
+
 # Creating Releases
 
 # Supporting files
