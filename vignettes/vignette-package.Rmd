@@ -50,7 +50,7 @@ myLittlePony = function() {
 
 The package definition can be amended with a `git` section like so:
 
-```
+```{r}
 packageDefinition = list(
 	name = 'pkg-minimal',
 	description = list(
