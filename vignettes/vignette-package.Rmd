@@ -77,6 +77,23 @@ packageDefinition = list(
 
 # Creating Releases
 
+Releases can be created through the news section of the package definition. If you use git and add a line for a new release, a git-tag with this version number is added to the repository. On github, this leads to the creation of a new release (i.e. tarball/zip for download). This is the example:
+
+```{r}
+packageDefinition = list(
+	name = 'pkg-minimal',
+	description = list(
+			title = 'Minimal R-package created with `package`',
+			author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
+			description = 'This appears in the package-documentaion, the markdown of the git-repository and in the package details.',
+			depends = c(),
+			suggests = c(),
+			license = 'LGPL',
+			news = "0.2-0  Release 0.2-0 was created by adding this line.\n0.1-0   Initial release"
+	)
+);
+```
+
 # Supporting files
 
 # Vignettes
