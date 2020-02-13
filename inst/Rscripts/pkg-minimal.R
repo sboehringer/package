@@ -11,7 +11,7 @@ packageDefinition = list(
 		title = 'Minimal R-package created with `package`',
 		# version to be documented in news section
 		#version = '0.1-0',
-		author = 'Stefan Böhringer <r-packages@s-boehringer.org>',
+		author = 'Stefan Boehringer <r-packages@s-boehringer.org>',
 		description = 'This appears in the package-documentaion, the markdown of the git-repository and in the package details. This package exports a single function, \\code{myLittlePony}, which prints a surprising message.',
 		depends = c(),
 		suggests = c(),
