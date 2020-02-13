@@ -11,7 +11,8 @@ createPackage(
   doInstall = FALSE,
   doCheck = T,
   gitOptions = list(),
-  noGit = F
+  noGit = F,
+  lib = NULL
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ used for parsing, coming from packages \code{package}, \code{jsonlite}, and \cod
 \item{gitOptions}{list with options for git interaction}
 
 \item{noGit}{boolean to suppress git calls, overwrites other options}
+
+\item{lib}{Path to package library as forwarded to \code{install.packages}}
 }
 \description{
 This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.

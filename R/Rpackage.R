@@ -191,7 +191,7 @@ installVignettes = function(o, packageDir, keep_md = TRUE) {
 }
 
 createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
-	doInstall = FALSE, debug = F, gitOptions = list(), noGit = F) {
+	doInstall = FALSE, debug = F, gitOptions = list(), noGit = F, lib = NULL) {
 	if (debug) print(o);
 
 	i = packageInterpolationDict(o, debug);
@@ -258,7 +258,7 @@ createPackageWithConfig = function(o, packagesDir = '~/src/Rpackages',
 	if (!noGit && notE(o$git)) gitActions(o, packagesDir, debug, gitOptions);
 
 	# <p> install
-	if (doInstall) Install_local(Sprintf('%{packageDir}s'), upgrade = 'never');
+	if (doInstall) Install_local(Sprintf('%{packageDir}s'), upgrade = 'never', lib = lib);
 
 	return(o);
 }
@@ -311,6 +311,7 @@ checkPackage = function(packageDesc, packagesDir) with (packageDesc, {
 #' @param dir directory to search for package definition
 #' @param gitOptions list with options for git interaction
 #' @param noGit boolean to suppress git calls, overwrites other options
+#' @param lib Path to package library as forwarded to \code{install.packages}
 #'
 #' @details This function creates a valid R package folder with DESCRIPTION, LICENSE and NEWS files.
 #'	All R-files listed are copied to this directory and documentation is created by  
@@ -383,10 +384,13 @@ checkPackage = function(packageDesc, packagesDir) with (packageDesc, {
 #'
 #' @export createPackage
 createPackage = function(packageDesc, packagesDir = '~/src/Rpackages',
-	dir = NULL, doInstall = FALSE, doCheck = T, gitOptions = list(), noGit = F) {
+	dir = NULL, doInstall = FALSE, doCheck = T, gitOptions = list(), noGit = F, lib = NULL) {
 	packageDef = probeDefinition(packageDesc, dir);
 	#print(packageDef);
-	r = createPackageWithConfig(packageDef, packagesDir, doInstall, gitOptions = gitOptions, noGit = noGit);
+	r = createPackageWithConfig(packageDef, packagesDir, doInstall,
+		gitOptions = gitOptions, noGit = noGit,
+		lib = lib
+	);
 	if (doCheck) checkPackage(packageDef, packagesDir);
 	return(r);
 }
