@@ -4,7 +4,7 @@
 #
 
 packageDefinition = list(
-	name = 'pkg-minimal',
+	name = 'pkg.minimal',
 	files = c(),
 	instFiles = list(),
 	description = list(
@@ -19,7 +19,7 @@ packageDefinition = list(
 		news = "0.1-0	Initial release"
 	),
 	git = list(
-		readme = '## Installation\n```{r}\nlibrary(devtools);\ninstall_github("user/pkg-minimal")\n```\n',
+		readme = 'Toy package to demonstrate R-package `package`.',
 		push = F,
 		pushOnNewVersion = F
 	)
