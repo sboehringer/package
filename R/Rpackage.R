@@ -6,6 +6,10 @@ packageDefinition = list(
 	name = 'package',
 	files = c('Rmeta.R', 'Rdata.R', 'Rsystem.R', 'Rfunctions.R', 'RpropertyList.R'),
 	instFiles = list(Rscripts = 'Dev/pkg-minimal.R'),
+	testing = list(
+		doInstall = TRUE,
+		tests = c('RtestsPackages/package/package.R')
+	),
 	description = list(
 		title = 'Create packages from R-code directly',
 		# version to be documented in news section

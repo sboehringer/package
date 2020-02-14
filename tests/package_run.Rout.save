@@ -1,0 +1,21 @@
+R Fri Feb 14 10:46:02 2020: Copying files: /home/pingu/lib64/R-3.6.1/library/package/Rscripts/pkg-minimal.R -> ~/src/Rpackages/pkg.minimal/R/
+Writing NAMESPACE
+Writing NAMESPACE
+Writing myLittlePony.Rd
+R Fri Feb 14 10:46:02 2020: system: cd ~/src/Rpackages/pkg.minimal ; git add --all
+R Fri Feb 14 10:46:02 2020: system: cd ~/src/Rpackages/pkg.minimal ; git commit -a -m "Commit for onward development of version 0.1-0"
+R Fri Feb 14 10:46:02 2020: system: cd ~/src/Rpackages/pkg.minimal ; git tag > /tmp/RtmpkicrOs/file2fa56ffb80f5
+R Fri Feb 14 10:46:02 2020: system: cd ~/src/Rpackages/pkg.minimal ; git archive --format tar HEAD | ( cd /tmp/RtmpkicrOs/pkg.minimal ; tar xf - --overwrite )
+R Fri Feb 14 10:46:02 2020: system: cd /tmp/RtmpkicrOs ; R CMD build pkg.minimal ; R CMD check pkg.minimal_0.1-0.tar.gz
+R Fri Feb 14 10:46:10 2020: Path expectation: /home/pingu/src/Rpackages/package/tests/RtestsExpectations/integrative_test+T1.R [vivified] [mode=deparse]
+[1] "Test: integrative_test [N = 1]"
+$integrative_test
+$integrative_test$result
+[1] TRUE
+
+$integrative_test$NsubTests
+[1] 1
+
+$integrative_test$Nvivified
+[1] 1
+
