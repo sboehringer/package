@@ -1,13 +1,11 @@
-[1] "Test: integrative_test [N = ?], legacy"
-[1] "********* test: integrative_test failed"
+[1] "Test: integrative_test [N = 1]"
 $integrative_test
 $integrative_test$result
-[1] "Error in switch(sp$ext, R = ({ : EXPR must be a length 1 vector\n"
-attr(,"class")
-[1] "try-error"
-attr(,"condition")
-<simpleError in switch(sp$ext, R = ({    myEnv = new.env()    SourceLocal(desc, local = myEnv)    def = get("packageDefinition", envir = myEnv)    def$files = unique(c(def$files, desc))    def}), plist = propertyFromStringExt(readFile(path)), json = ({    requireNamespace("jsonlite")    read_json(path)}), yaml = ({    requireNamespace("yaml")    read_yaml(path)})): EXPR must be a length 1 vector>
+[1] TRUE
 
 $integrative_test$NsubTests
 [1] 1
+
+$integrative_test$Nvivified
+[1] 0
 
