@@ -2,6 +2,7 @@
 #	package.R
 #Thu Feb 13 13:20:37 CET 2020
 library('roxygen2');
+library('package');
 
 integrative_test = function() {
 	tmp = tempdir();
