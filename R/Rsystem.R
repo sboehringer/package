@@ -794,13 +794,14 @@ md5sumString = function(s, ...)substr(SystemS('echo -n %{s}q | md5sum', return.o
 clearWarnings = function()assign('last.warning', NULL, envir = baseenv())
 
 # fix broken install from dir: create tarball -> install_local
-Install_local = function(path, ..., lib) {
+Install_local = function(path, ...) {
 	sp = splitPath(path);
 	pkgPath = Sprintf('%{dir}s/%{base}s.tgz', dir = tempdir(), base = sp$base);
 	System(Sprintf('cd %{dir}s ; tar czf %{pkgPath}Q %{name}Q', dir = sp$dir, name = sp$file), 2);
-	libLocation = if (missing(lib)) 'default location' else lib;
+	lib = list(...)$lib;
+	libLocation = if (is.null(lib)) 'default location' else lib;
 	LogS(4, 'Installing to lib:%{libLocation}s');
-	install_local(pkgPath, ..., lib = lib);
+	install_local(pkgPath, ...);
 }
 
 #
