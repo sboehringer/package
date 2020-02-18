@@ -798,6 +798,8 @@ Install_local = function(path, ..., lib) {
 	sp = splitPath(path);
 	pkgPath = Sprintf('%{dir}s/%{base}s.tgz', dir = tempdir(), base = sp$base);
 	System(Sprintf('cd %{dir}s ; tar czf %{pkgPath}Q %{name}Q', dir = sp$dir, name = sp$file), 2);
+	libLocation = if (missing(lib)) 'default location' else lib;
+	LogS(4, 'Installing to lib:%{libLocation}s');
 	install_local(pkgPath, ..., lib = lib);
 }
 
