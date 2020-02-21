@@ -12,7 +12,7 @@ integrative_test = function() {
 	capture.output(
 		createPackage(
 			system.file('Rscripts/pkg-minimal.R', package = 'package'),
-			doInstall = T, noGit = T, lib = libPath
+			doInstall = TRUE, noGit = TRUE, doCheck = FALSE, lib = libPath
 		)
 	);
 	pkgFolder = package:::Sprintf('%{libPath}s/pkg.minimal');
