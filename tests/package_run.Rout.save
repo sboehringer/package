@@ -1,11 +1,12 @@
-[1] "Test: integrative_test [N = 1]"
+R Fri Feb 21 16:40:17 2020: Path expectation: /home/pingu/src/Rpackages/package/tests/RtestsExpectations/integrative_test+T2.R [vivified] [mode=deparse]
+[1] "Test: integrative_test [N = 2]"
 $integrative_test
 $integrative_test$result
 [1] TRUE
 
 $integrative_test$NsubTests
-[1] 1
+[1] 2
 
 $integrative_test$Nvivified
-[1] 0
+[1] 1
 

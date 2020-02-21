@@ -800,8 +800,8 @@ Install_local = function(path, ...) {
 	System(Sprintf('cd %{dir}s ; tar czf %{pkgPath}Q %{name}Q', dir = sp$dir, name = sp$file), 2);
 	lib = list(...)$lib;
 	libLocation = if (is.null(lib)) 'default location' else lib;
-	#LogS(4, 'Installing to lib:%{libLocation}s');
-	print(Sprintf('Installing to lib:%{libLocation}s'));
+	LogS(4, 'Installing to lib:%{libLocation}s');
+	#print(Sprintf('Installing to lib:%{libLocation}s'));
 	install_local(pkgPath, ...);
 }
 
