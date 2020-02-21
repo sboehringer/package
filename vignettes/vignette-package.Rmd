@@ -96,6 +96,33 @@ packageDefinition = list(
 
 # Supporting files
 
+Supporing files are installed in the `inst` subfolder of the package. A character vector with path names can be supplied. All elements are copied recursively to the `inst` subfolder, taking the last path component as file/directory name in `inst`. For example:
+
+```{r}
+packageDefinition = list(
+	name = 'pkg-minimal',
+	instFiles = list(Rscripts = 'Dev/pkg-minimal.R')
+	#...
+);
+```
+
+In the example above, the file `pkg-minimal.R` will be copied to the `inst` folder. These files can be accessed using the `system.file` function as documented in the general R-package creation documentation.
+
+
 # Vignettes
 
-Vignettes can be written in R-markdown.
+Vignettes can be written in R-markdown. A vignette entry in the list indicates all files to be included.
+
+```{r}
+packageDefinition = list(
+	name = 'pkg-minimal',
+	description = list(
+			title = 'Minimal R-package created with `package`',
+			vignettes = "vignettes/vignette-package.Rmd"
+			# ...
+	)
+);
+```
+
+Compiled files are copied to the `doc` subfolder of the package. The creation of markdown files (`.md`) is enforced. They can used to create wiki-pages on popular code hosting sites.
+
