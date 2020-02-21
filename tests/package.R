@@ -4,18 +4,17 @@
 library('roxygen2');
 library('devtools');
 library('package');
-library('testme');
 
 integrative_test = function() {
 	tmp = tempdir();
-	libPath = package:::Sprintf('%{tmp}s/lib');
+	libPath = package:::Sprintf('%{tmp}s/package-tests-lib');
 	dir.create(libPath, recursive = TRUE, showWarnings = FALSE);
 	capture.output(
 		createPackage(
 			system.file('Rscripts/pkg-minimal.R', package = 'package'),
 			doInstall = T, noGit = T, lib = libPath)
 	);
-	pkgFolder = package:::Sprintf('%{tmp}s/pkg.minimal');
+	pkgFolder = package:::Sprintf('%{libPath}s/pkg.minimal');
 	roxygen2::load_installed(pkgFolder);
 
 	T1 = capture.output(myLittlePony());
