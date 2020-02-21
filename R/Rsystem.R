@@ -799,7 +799,7 @@ Install_local = function(path, ...) {
 	td = tempdir();
 	pkgPath = Sprintf('%{td}s/%{base}s.tgz', sp);
 	# dir component is containing folder
-	System(Sprintf('cd %{dir}s ; tar czf %{pkgPath}Q %{file}Q', sp), 2);
+	System(Sprintf('cd %{dir}Q ; tar czf %{pkgPath}Q %{file}Q', sp), 2);
 	#lib = list(...)$lib;
 	#libLocation = if (is.null(lib)) 'default location' else lib;
 	#LogS(4, 'Installing to lib:%{libLocation}s');
