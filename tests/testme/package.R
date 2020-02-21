@@ -9,6 +9,7 @@ integrative_test = function() {
 	tmp = tempdir();
 	libPath = package:::Sprintf('%{tmp}s/package-tests-lib');
 	dir.create(libPath, recursive = TRUE, showWarnings = FALSE);
+	Sys.setenv(R_TESTS = '');
 	capture.output(
 		createPackage(
 			system.file('Rscripts/pkg-minimal.R', package = 'package'),
