@@ -12,7 +12,8 @@ integrative_test = function() {
 	capture.output(
 		createPackage(
 			system.file('Rscripts/pkg-minimal.R', package = 'package'),
-			doInstall = T, noGit = T, lib = libPath)
+			doInstall = T, noGit = T, lib = libPath
+		)
 	);
 	pkgFolder = package:::Sprintf('%{libPath}s/pkg.minimal');
 	roxygen2::load_installed(pkgFolder);
