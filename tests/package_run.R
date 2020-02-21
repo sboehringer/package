@@ -1,4 +1,4 @@
 # This runs tests `package`
 #testmeEnvInit('RtestsExpectations', logger = print);
 library('testme');
-print(testmeFileSingle('package.R', 'RtestsExpectations', useGit = FALSE, logger = print));
+print(testmeFileSingle('testme/package.R', 'testme/RtestsExpectations', useGit = FALSE, logger = print));
