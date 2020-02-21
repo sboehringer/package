@@ -6,7 +6,7 @@
 packageDefinition = list(
 	name = 'pkg.minimal',
 	files = c(),
-	instFiles = list(),
+	instFiles = c(),
 	description = list(
 		title = 'Minimal R-package created with `package`',
 		# version to be documented in news section
