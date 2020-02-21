@@ -4,6 +4,7 @@
 library('roxygen2');
 library('devtools');
 library('package');
+library('testme');
 
 integrative_test = function() {
 	tmp = tempdir();
