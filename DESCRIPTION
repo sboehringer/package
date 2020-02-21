@@ -1,7 +1,7 @@
 Package: package
 Type: Package
 Title: Create packages from R-code directly
-Version: 0.8-1
+Version: 0.9-0
 Date: 21-02-2020
 Author: Stefan Böhringer <r-packages@s-boehringer.org>
 Maintainer: Stefan Böhringer <r-packages@s-boehringer.org>
