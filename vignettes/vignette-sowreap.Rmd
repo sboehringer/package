@@ -1,0 +1,37 @@
+---
+title: Vignette for R-package sowreap
+date: "`r Sys.Date()`"
+vignette: >
+  %\VignetteIndexEntry{vignette-sowreap.Rmd}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output: rmarkdown::html_vignette
+author: Stefan Böhringer <r-packages@s-boehringer.org>
+packageName: sowreap
+file: vignette-sowreap.Rmd
+---
+
+# Purpose of the package
+
+This package implements the Sow/Reap pattern, i.e. values can be returned anywhere in the code without leaving a function. This allows to decouple generating results from returning them, which, in return can be very useful in complex workflows.
+
+## Historical Note
+
+To the author's knowledge, the Sow/Reap pattern has been first introduced by the Mathematica language. Apart from this R-package, this seems to be the only implementation of this pattern.
+
+## A first example
+
+A first example illustrates the concept. In the following function we are only interested in return uneven numbers. Yet, we need to iterate all numbers to get at the needed results. Instead of having to post-processing a complex return data structure, the following code directly generates a list with the required results.
+
+```{r}
+	library('sowreap');
+	f = function(n) {
+		if (n == 0) return();
+		if ((n %% 2) == 1) Sow(n);
+		f(n - 1)
+	}
+	r = Reap(f(10));
+	print(r);
+```
+
+The funciton `f` represents our algorithm, which is a simple recursion in this case. Whenever an interesting result is generated that should be returned, the function `Sow` is called with the value to be reported. Function `Reap` is used to collect results. The first argument of `Reap` is the expression the `Sow`-calls of which are to be collected.
