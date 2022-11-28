@@ -12,7 +12,8 @@ createPackage(
   doCheck = T,
   gitOptions = list(),
   noGit = F,
-  lib = NULL
+  lib = NULL,
+  asCran = FALSE
 )
 }
 \arguments{
@@ -29,13 +30,15 @@ used for parsing, coming from packages \code{package}, \code{jsonlite}, and \cod
 
 \item{doInstall}{flag to indicate whether the package should also be installed}
 
-\item{doCheck}{whether to run R CMD check --cran on the package}
+\item{doCheck}{whether to run R CMD check --as-cran on the package}
 
 \item{gitOptions}{list with options for git interaction}
 
 \item{noGit}{boolean to suppress git calls, overwrites other options}
 
 \item{lib}{Path to package library as forwarded to \code{install.packages}}
+
+\item{asCran}{boolean to indicate whether check should be including --as-cran}
 }
 \description{
 This function creates a package dir, runs documentation generation using roxygen and optionally installs the package. It can also update via git and manage version numbers. In a minimal configuration, a single file is sufficient to create a fully documented R package.

@@ -16,6 +16,9 @@ Otherwise standard recyling rules apply.}
 
 \item{envir}{environment in which values are to be evaluated}
 }
+\value{
+Interpolated character string
+}
 \description{
 The function behaves similar to sprintf, except that character sequences to be substituted are
 indicated by name. To be implemented: *-specifications
@@ -25,11 +28,4 @@ indicated by name. To be implemented: *-specifications
 #@param d values to substitute into \code{s}
 #@param template template for substitution pattern. Within this pattern \code{__DICT_KEY__} is
 # substituted for a key in \code{d}. This string \code{k} is substituted in \code{s} with \code{d[[k]]}.
-}
-\examples{
-\dontrun{
-Sprintf('These are N \%{N} characters.', list(N = 10));
-Sprintf('These are N \%{N}d characters.', list(N = 10));
-Sprintf('These are N \%{N}02d characters.', list(N = 10));
-}
 }

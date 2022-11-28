@@ -11,13 +11,16 @@ Deparse(o)
 }
 \value{
 single character vector with the deparsed expression
+
+character string with the deparsed R-object
 }
 \description{
 Create single character string from R expression
 }
 \details{
-Calls deparse on argument and pastes together the return value of \code{deparse} resulting
-in a single character string.
+Calls deparse on argument and pastes together the return value of \code{deparse()} resulting
+in a single character string. Operates very similar to \code{dput()}, except, it cannot write to
+a file.
 }
 \examples{
 \dontrun{
@@ -31,4 +34,8 @@ eval(Deparse(matrix(1:10, ncol = 5)))
 [deparse()] which this function wraps
 
 [eval()] for the inverse operation
+
+[dput()] similar function
+
+[dget()] similar to eval of character string
 }

@@ -2,16 +2,18 @@
 title: Package documentation
 date: "`r Sys.Date()`"
 vignette: >
-  %\VignetteIndexEntry{Package documentation}
+  %\VignetteIndexEntry{vignette-package.Rmd}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 output: rmarkdown::html_vignette
 author: Stefan Böhringer <r-packages@s-boehringer.org>
+packageName: package
+file: vignette-package.Rmd
 ---
 
 # Purpose of the package
 
-This package is meant to allow the development of ad-hoc packages in a couple of minutes. All that is needed is a single R `list` that defines project properties and is typically 20-30 lines long. Here is an exmaple:
+This package is meant to allow the development of ad-hoc packages in a couple of minutes. All that is needed is a single R `list` that defines project properties and is typically 20-30 lines long. Here is an example:
 
 ```{r}
 packageDefinition = list(
@@ -28,7 +30,7 @@ packageDefinition = list(
 );
 ```
 
-The description key contains a list with information that goes into the `DESCRIPTION` file of the R-package. Apart from this the file (or another one) should contain the functions you want to put into the package. For example:
+The description key contains a list with information that goes into the `DESCRIPTION` file of the R-package. Apart from this `list`, the file (or another one) should contain the functions you want to put into the package. For example:
 
 ```{r}
 #' Subject yourself to a message
@@ -45,6 +47,8 @@ myLittlePony = function() {
 	print('this is pateta');
 }
 ```
+
+The documentation is handled via package `roxygen2`, please consult the package documentation. In the example above, the function is exported using the `roxygen2` directive `@export`.
 
 # Git use
 
@@ -71,13 +75,13 @@ packageDefinition = list(
 );
 ```
 
-`readme` is a character string containing the content of the README file in markdown format. It will be literally written to the file `README.md` in the main folder of the package and is display on the homepage of the respository by sites such as github.
-`push` is a boolean to indicate whether `createPackage` should automatically push the local source tree.
+`readme` is a character string containing the content of the README file in markdown format. It will be literally written to the file `README.md` in the main folder of the package and is displayed on the homepage of the respository by sites such as github.
+`push` is a boolean to indicate whether `createPackage` should automatically push the local source tree. `pushOnNewVersion` restricts pusing to the creation of new versions (see next section).
 `remote` is the URL of the remote git server to be pushed to.
 
 # Creating Releases
 
-Releases can be created through the news section of the package definition. If you use git and add a line for a new release, a git-tag with this version number is added to the repository. On github, this leads to the creation of a new release (i.e. tarball/zip for download). This is the example:
+Releases can be created through the news section of the package definition. If you use git and add a line for a new release, a git-tag with this version number is added to the repository. On github, this leads to the creation of a new release (i.e. tarball/zip for download). In the following example version `0.2-0` is created.
 
 ```{r}
 packageDefinition = list(
@@ -96,7 +100,7 @@ packageDefinition = list(
 
 # Supporting files
 
-Supporing files are installed in the `inst` subfolder of the package. A character vector with path names can be supplied. All elements are copied recursively to the `inst` subfolder, taking the last path component as file/directory name in `inst`. For example:
+Supporing files are installed in subfolder `Rscripts` of the `inst` folder of the package. A character vector with path names can be supplied. All elements are copied recursively to the `inst` subfolder, taking the last path component as file/directory name in `inst`. For example:
 
 ```{r}
 packageDefinition = list(
@@ -124,5 +128,5 @@ packageDefinition = list(
 );
 ```
 
-Compiled files are copied to the `doc` subfolder of the package. The creation of markdown files (`.md`) is enforced. They can used to create wiki-pages on popular code hosting sites.
+Compiled files are copied to the `doc` subfolder of the package. The creation of markdown files (`.md`) is enforced. These can be used to create wiki-pages on popular code hosting sites (`gitlab`, `github`).
 

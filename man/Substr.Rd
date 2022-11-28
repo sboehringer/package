@@ -17,15 +17,10 @@ Substr(s, start, length, replacement)
 \item{replacement}{vector of strings to subsitute. If missing, \code{Substr} returns sub-strings indicated
 by start/length}
 }
+\value{
+character vector containing extracted sub-strings
+}
 \description{
 The function behaves similar to sprintf, except that character sequences to be substituted are
 indicated by name.
-}
-\examples{
-\dontrun{
-print(Substr("abc", c(2, 3), c(1, 1), c("def", 'jkl')));
-print(Substr("abcdef", c(2, 3, 5), c(1, 1, 1), c("123", '456', '789')));
-print(Substr("abcdef", c(1, 3, 5), c(1, 1, 1), c("123", '456', '789')));
-print(Substr("abcdef", c(1, 3, 5), c(0, 1, 0), c("123", '456', '789')));
-}
 }

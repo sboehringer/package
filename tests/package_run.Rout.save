@@ -1,3 +1,38 @@
+> # This runs tests `package`
+> #testmeEnvInit('RtestsExpectations', logger = print);
+> library('testme');
+Loading required package: compare
+
+Attaching package: ‘compare’
+
+The following object is masked from ‘package:base’:
+
+    isTRUE
+
+> print(testmeFileSingle('testme/package.R', 'testme/RtestsExpectations', useGit = FALSE, logger = print));
+Loading required package: usethis
+Registered S3 method overwritten by 'testthat':
+  method           from   
+  print.comparison compare
+R Mon Nov 28 16:35:54 2022: Copying files: /home/pingu/lib64/R-4.1.1/library/package/Rscripts/pkg-minimal.R -> ~/src/Rpackages/pkg.minimal/R/
+
+R Mon Nov 28 16:35:54 2022: Copy "/home/pingu/lib64/R-4.1.1/library/package/Rscripts/pkg-minimal.R --> /home/pingu/src/Rpackages/pkg.minimal/R/
+
+Updating roxygen version in /home/pingu/src/Rpackages/pkg.minimal/DESCRIPTION
+ℹ Loading pkg.minimal
+R Mon Nov 28 16:35:55 2022: system: cd "/home/pingu/src/Rpackages" ; tar czf "/tmp/RtmpNOiZcm/pkg.tar.gz" "pkg.minimal"
+
+* installing *source* package ‘pkg.minimal’ ...
+** using staged installation
+** R
+** byte-compile and prepare package for lazy loading
+** help
+*** installing help indices
+** building package indices
+** testing if installed package can be loaded from temporary location
+** testing if installed package can be loaded from final location
+** testing if installed package keeps a record of temporary installation path
+* DONE (pkg.minimal)
 [1] "Test: integrative_test [N = 2]"
 $integrative_test
 $integrative_test$result
@@ -9,3 +44,5 @@ $integrative_test$NsubTests
 $integrative_test$Nvivified
 [1] 0
 
+
+> 

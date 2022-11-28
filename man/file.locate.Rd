@@ -7,10 +7,10 @@
 file.locate(
   path,
   prefixes = NULL,
-  normalize = T,
-  as.dirs = T,
-  force = F,
-  home = T
+  normalize = TRUE,
+  as.dirs = TRUE,
+  force = FALSE,
+  home = TRUE
 )
 }
 \arguments{
@@ -25,6 +25,9 @@ file.locate(
 \item{force}{enforces that path and prefix are always joined, otherwise if path is absolute no prefixing is performed}
 
 \item{home}{boolean to indicate whether starting prefix '~' should be interpolated to the home folder}
+}
+\value{
+character vector with path to file or NULL if no file could be located
 }
 \description{
 Search for pathes.

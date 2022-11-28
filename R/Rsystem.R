@@ -8,7 +8,7 @@
 
 # <!><N> works only on atomic path
 # <!> 5.1.2016: trailing slash leads to basename of ""
-splitPath = function(path, removeQualifier = T, ssh = F, skipExists = F) {
+splitPath = function(path, removeQualifier = TRUE, ssh = FALSE, skipExists = FALSE) {
 	if (is.null(path)) return(NULL);
 	if (removeQualifier) {
 		q = fetchRegexpr('(?<=^\\[).*?(?=\\]:)', path);
@@ -17,7 +17,7 @@ splitPath = function(path, removeQualifier = T, ssh = F, skipExists = F) {
 	sshm = list(user = '', host = '', userhost = '');
 	if (ssh) {
 		sshm = fetchRegexpr('^(?:(?:([a-z]\\w*)(?:@))?([a-z][\\w.]*):)?(.*)', path,
-			ignore.case = T, captureN = c('user', 'host', 'path'))[[1]];
+			ignore.case = TRUE, captureN = c('user', 'host', 'path'))[[1]];
 		sshm$userhost = if (sshm$user != '') sprintf('%s@%s', sshm$user, sshm$host) else sshm$host;
 		path = sshm$path;
 	}
@@ -33,6 +33,13 @@ splitPath = function(path, removeQualifier = T, ssh = F, skipExists = F) {
 	#base = substr(r.base, 1, r[1] - 1 - (ifelse(substr(r.base, r[1] - 1, r[1] - 1) == '.', 1, 0)));
 	# reduce to file.ext
 	Nchar = nchar(path);
+	# replace leading '~'
+	if (path == '~') {
+		path = Sys.getenv('HOME');
+	} else if (Nchar > 1 && substr(path, 1, 2) == '~/') {
+		path = join(c(Sys.getenv('HOME'), substring(path, 2)), '');
+	}
+	Nchar = nchar(path);
 	if (Nchar != 0 && substr(path, Nchar, Nchar) == '/') {
 		base = '';
 		dir = substr(path, 1, Nchar - 1);
@@ -45,11 +52,11 @@ splitPath = function(path, removeQualifier = T, ssh = F, skipExists = F) {
 	# chop off extension if present
 	if (length(fetchRegexpr('\\.', base)) > 0) base = fetchRegexpr('\\A.*(?=\\.)', base);
 	
-	#pieces = regexpr(re, path, perl = T);
+	#pieces = regexpr(re, path, perl = TRUE);
 	pieces = fetchRegexpr('([^.]+)', path);
 	isAbsolute = Nchar != 0 && substr(path, 1, 1) == '/';
 	# <N> disk is accessed
-	exists = if (!skipExists) File.exists(path, host = sshm$userhost, ssh = F) else NA;
+	exists = if (!skipExists) File.exists(path, host = sshm$userhost, ssh = FALSE) else NA;
 	nonempty = exists && (file.info(path)$size > 0);
 	ret = c(list(
 		dir = dir,
@@ -70,14 +77,19 @@ splitPath = function(path, removeQualifier = T, ssh = F, skipExists = F) {
 		list(qualifier = NA, qualifierFull = ''));
 	ret
 }
-path.absolute = absolutePath = function(path, home.dir = T, ssh = T) {
+path.absolute = absolutePath = function(path, home.dir = TRUE, ssh = TRUE) {
 	path = splitPath(path, ssh = ssh)$path;
 	if (home.dir && nchar(path) >= 2 && substr(path, 1, 2) == "~/")
 		path = sprintf("%s/%s", Sys.getenv('HOME'), substr(path, 3, nchar(path)));
 	if (nchar(path) > 0 && substr(path, 1, 1) == "/") path else sprintf("%s/%s", getwd(), path)
 }
-tempFileName = function(prefix, extension = NULL, digits = 6, retries = 5, inRtmp = F,
-	createDir = F, home.dir = T, doNotTouch = F) {
+pathSimplify = function(path) {
+	path = gsub('(^./|/.(?=/|$))', '', path, perl = TRUE);
+	return(path);
+}
+
+tempFileName = function(prefix, extension = NULL, digits = 6, retries = 5, inRtmp = FALSE,
+	createDir = FALSE, home.dir = TRUE, doNotTouch = FALSE) {
 	ext = if (is.null(extension)) '' else sprintf('.%s', extension);
 	path = NULL;
 	if (inRtmp) prefix = sprintf('%s/%s', tempdir(), prefix);
@@ -91,8 +103,8 @@ tempFileName = function(prefix, extension = NULL, digits = 6, retries = 5, inRtm
 		stop(sprintf('Could not create tempfile with prefix "%s" after %d retries', prefix, retries));
 	# potential race condition <N>
 	if (createDir)
-		Dir.create(path, recursive = T) else
-		if (!doNotTouch) writeFile(path, '', mkpath = T, ssh = T);
+		Dir.create(path, recursive = TRUE) else
+		if (!doNotTouch) writeFile(path, '', mkpath = TRUE, ssh = TRUE);
 	# # old implementation
 	#path = tempfile(prefix);
 	#cat('', file = path);	# touch path to lock name
@@ -101,19 +113,21 @@ tempFileName = function(prefix, extension = NULL, digits = 6, retries = 5, inRtm
 	Log(sprintf('Tempfilename:%s', path), 5);
 	path
 }
-dirList = function(dir, regex = T, case = T) {
+dirList = function(dir, regex = TRUE, case = TRUE, path = FALSE, absolute = FALSE) {
 	base = splitPath(dir)$dir;
 	files = list.files(base);
 	if (regex) {
 		re = splitPath(dir)$file;
-		files = files[grep(re, files, perl = T, ignore.case = !case)];
+		files = files[grep(re, files, perl = TRUE, ignore.case = !case)];
 	}
+	prefix = if (absolute) splitPath(base)$absolute else base;
+	if (absolute || path) files = paste(prefix, files, sep = '/');
 	files
 }
-list_files_with_exts = function(path, exts, full.names = T)
+list_files_with_exts = function(path, exts, full.names = TRUE)
 	list.files(path, pattern = Sprintf('.(%{Exts}s)$', Exts = join(exts, '|')), full.names = full.names);
 
-list_files_with_base = function(path, exts, full.names = T) {
+list_files_with_base = function(path, exts, full.names = TRUE) {
 	sp = splitPath(path);
 	list.files(sp$dir,
 		pattern = Sprintf('^%{base}s.(%{Exts}s)$', base = sp$base, Exts = join(exts, '|')),
@@ -125,9 +139,9 @@ list_files_with_base = function(path, exts, full.names = T) {
 #	<p> file manipulation
 #
 
-File.exists = function(path, host = '', agent = 'ssh', ssh = T) {
+File.exists = function(path, host = '', agent = 'ssh', ssh = TRUE) {
 	if (ssh) {
-		sp = splitPath(path, skipExists = T, ssh = T);
+		sp = splitPath(path, skipExists = TRUE, ssh = TRUE);
 		host = sp$userhost;
 		path = sp$path;
 	}
@@ -138,17 +152,22 @@ File.exists = function(path, host = '', agent = 'ssh', ssh = T) {
 	r
 }
 
-File.copy_raw = function(from, to, ..., recursive = F, agent = 'scp', logLevel = 6, ignore.shell = T,
-	symbolicLinkIfLocal = T) {
-	spF = splitPath(from, ssh = T);
-	spT = splitPath(to, ssh = T);
+File.copy_raw = function(from, to, ...,
+	overwrite = FALSE, recursive = FALSE, agent = 'scp', logLevel = 6, ignore.shell = TRUE,
+	symbolicLinkIfLocal = TRUE) {
+	spF = splitPath(from, ssh = TRUE);
+	spT = splitPath(to, ssh = TRUE);
 	is.remote.f = spF$is.remote || spF$host == 'localhost';
 	is.remote.t = spT$is.remote || spT$host == 'localhost';
 
 	r = if (!is.remote.f && !is.remote.t) {
 		if (symbolicLinkIfLocal) {
+			LogS(4, 'Symlinking "%{from}s --> %{to}s', from = spF$path, to = spT$path);
 			file.symlink(spF$path, spT$path, ...);
-		} else file.copy(spF$path, spT$path, recursive = recursive, ...);
+		} else {
+			LogS(4, 'Copy "%{from}s --> %{to}s', from = spF$path, to = spT$path);
+			file.copy(spF$path, spT$path, recursive = recursive, ..., overwrite = overwrite);
+		}
 	} else {
 		# <A> assume 'to' to be atomic
 		cmd = sprintf('%s %s %s %s %s',
@@ -163,8 +182,8 @@ File.copy_raw = function(from, to, ..., recursive = F, agent = 'scp', logLevel =
 	r
 }
 
-File.copy = function(from, to, ..., recursive = F, agent = 'scp', logLevel = 6, ignore.shell = T,
-	symbolicLinkIfLocal = T) {
+File.copy = function(from, to, ..., recursive = FALSE, agent = 'scp', logLevel = 6, ignore.shell = TRUE,
+	symbolicLinkIfLocal = TRUE) {
 	if (is.null(from)) return(NULL);
 	pairs = cbind(from, to);
 	r = apply(pairs, 1, function(r) {
@@ -175,12 +194,12 @@ File.copy = function(from, to, ..., recursive = F, agent = 'scp', logLevel = 6, 
 	r
 }
 
-File.remove = function(path, ..., agent = 'ssh', ssh = T, logLevel = 6) {
+File.remove = function(path, ..., agent = 'ssh', ssh = TRUE, logLevel = 6) {
 	r = if (ssh) {
-		sp = splitPath(path, skipExists = T, ssh = T);
+		sp = splitPath(path, skipExists = TRUE, ssh = TRUE);
 		host = sp$userhost;
 		rpath = sp$path;
-		if (File.exists(path, ssh = T))
+		if (File.exists(path, ssh = TRUE))
 			System(sprintf('rm %s', join(sapply(rpath, qs))), pattern = agent,
 				ssh_host = host, logLevel = logLevel);
 	} else if (file.exists(path)) file.remove(path, ...);
@@ -188,9 +207,10 @@ File.remove = function(path, ..., agent = 'ssh', ssh = T, logLevel = 6) {
 }
 
 # <i> remote operations
-File.symlink = function(from, to, replace = T, agent = 'ssh', ssh = F, logLevel = 6) {
+File.symlink = function(from, to, replace = TRUE, agent = 'ssh', ssh = FALSE, logLevel = 6,
+	warnings = FALSE) {
 	r = if (ssh) {
-		sp = splitPath(from, skipExists = T, ssh = T);
+		sp = splitPath(from, skipExists = TRUE, ssh = TRUE);
 		host = sp$userhost;
 		rpath = sp$path;
 		# <!><i>
@@ -198,7 +218,9 @@ File.symlink = function(from, to, replace = T, agent = 'ssh', ssh = F, logLevel 
 	} else {
 		Log(sprintf('symlink %s -> %s', qs(from), qs(to)), logLevel);
 		if (replace && file.exists(to)) file.remove(to);
-		file.symlink(from, to);
+		if (warnings)
+			file.symlink(from, to) else
+			suppressWarnings(file.symlink(from, to))
 	}
 	r
 }
@@ -206,9 +228,9 @@ File.symlink = function(from, to, replace = T, agent = 'ssh', ssh = F, logLevel 
 
 # <!> only atomic path
 #	treatAsFile: causes Dir.create to split off last path-component
-Dir.create = function(path, ..., recursive = F, agent = 'ssh', logLevel = 6,
-	ignore.shell = T, allow.exists = T, treatPathAsFile = F) {
-	sp = splitPath(path, ssh = T);
+Dir.create = function(path, ..., recursive = FALSE, agent = 'ssh', logLevel = 6,
+	ignore.shell = TRUE, allow.exists = TRUE, treatPathAsFile = FALSE) {
+	sp = splitPath(path, ssh = TRUE);
 	# ignore last path-component
 	if (treatPathAsFile) {
 		sp$path = sp$dir;
@@ -226,10 +248,10 @@ Dir.create = function(path, ..., recursive = F, agent = 'ssh', logLevel = 6,
 	}
 }
 
-Save = function(..., file = NULL, symbolsAsVectors = F, mkpath = T, envir = parent.frame(1)) {
-	sp = splitPath(file, ssh = T);
+Save = function(..., file = NULL, symbolsAsVectors = FALSE, mkpath = TRUE, envir = parent.frame(1)) {
+	sp = splitPath(file, ssh = TRUE);
 	localPath = if (sp$is.remote) tempfile() else file;
-	if (mkpath) { Dir.create(file, recursive = T, treatPathAsFile = T); }
+	if (mkpath) { Dir.create(file, recursive = TRUE, treatPathAsFile = TRUE); }
 	r = if (symbolsAsVectors) {
 		do.call('save', c(as.list(c(...)), list(file = localPath)), envir = envir);
 	} else save(..., file = localPath, envir = envir);
@@ -237,7 +259,7 @@ Save = function(..., file = NULL, symbolsAsVectors = F, mkpath = T, envir = pare
 	r
 }
 Load = function(..., file = NULL, Load_sleep = 0, Load_retries = 3, envir = parent.frame(1), logLevel = 6) {
-	sp = splitPath(file, ssh = T);
+	sp = splitPath(file, ssh = TRUE);
 	localPath = if (sp$is.remote) tempfile() else file;
 	r = NULL;
 	for (i in 1:Load_retries) {
@@ -271,7 +293,7 @@ fileName = function(output, extension = NULL, subtype = NULL) {
 }
 #.globalOutput = list(prefix = 'results/20120126-');
 #save(r, file = .fn('simulation', 'RData'))
-.globalOutputDefault = .globalOutput = list(prefix = '', tag = NULL, tagFirst = F);
+.globalOutputDefault = .globalOutput = list(prefix = '', tag = NULL, tagFirst = FALSE);
 GlobalOutput_env__ = new.env();
 # .fn.set(prefix = 'results/predictionTesting-')
 # @par prefix character, start path name with this character string
@@ -331,12 +353,12 @@ exprInDir = function(expr, dir = '.', envir = parent.frame()) {
 # 	stop(Sprintf('No path could be crated from base path: %{path}s'));
 # }
 
-findLastVersion = function(path, retAll = F) {
+findLastVersion = function(path, retAll = FALSE) {
 	sp = splitPath(path);
 	E = if (is.null(sp$ext)) '' else with(sp, Sprintf('.%{ext}s'));
 	re = with(sp, Sprintf('^%{base}s-(\\d+)%{E}s$'));
 	files = list.files(sp$dir, pattern = re);
-	i = max(c(0, as.integer(Regexpr(re, files, captures = T))));
+	i = max(c(0, as.integer(Regexpr(re, files, captures = TRUE))));
 	highest = if (i == 0) path else with(sp, Sprintf('%{fullbase}s-%{i}d%{E}s'));
 	return(if (retAll) list(path = highest, version = i, ext = E) else highest);
 }
@@ -345,7 +367,7 @@ findNextFile = function(path, Nmax = 1e2) {
 # 	sp = splitPath(path);
 # 	re = with(sp, Sprintf('^%{base}s-(\\d+).%{ext}s$'));
 # 	files = list.files(sp$dir, pattern = re);
-	lv = findLastVersion(path, retAll = T);
+	lv = findLastVersion(path, retAll = TRUE);
 	v = lv$version;
 	if (v == 0 && !file.exists(path)) return(path);
 	if (v >= Nmax)
@@ -422,16 +444,33 @@ handleTriggers = function(o, triggerDefinition = NULL) {
 		Dir.create(jidFile, treatPathAsFile = TRUE);
 		waitOption = if (is.null(waitForJids)) '' else
 			sprintf('--waitForJids %s', join(waitForJids, sep = ','));
-		print(cmd);
-		ncmd = sprintf('qsub.pl --jidReplace %s %s --unquote %s -- %s',
+		message(cmd);
+		ncmd = sprintf('qsub.pl --type ogs --jidReplace %s %s --unquote %s -- %s',
 			jidFile, waitOption, qsubOptions, qs(cmd));
-		print(ncmd);
+		message(ncmd);
 		spec = list(cmd = ncmd, jidFile = jidFile);
 		spec
 	},
 	post = function(spec, ret, ...) { list(jid = as.integer(spec$fs$readFile(spec$jidFile))) }
 	),
-	
+
+	qsub_slurm = list(pre = function(cmd, spec,
+		jidFile = spec$fs$tempfile(sprintf('/tmp/R_%s/qsub_pattern', Sys.getenv('USER'))),
+		qsubOptions = '',
+		waitForJids = NULL, ...) {
+		Dir.create(jidFile, treatPathAsFile = TRUE);
+		waitOption = if (is.null(waitForJids)) '' else
+			sprintf('--waitForJids %s', join(waitForJids, sep = ','));
+		message(cmd);
+		ncmd = sprintf('qsub.pl --type slurm --jidReplace %s %s --unquote %s -- %s',
+			jidFile, waitOption, qsubOptions, qs(cmd));
+		message(ncmd);
+		spec = list(cmd = ncmd, jidFile = jidFile);
+		spec
+	},
+	post = function(spec, ret, ...) { list(jid = as.integer(spec$fs$readFile(spec$jidFile))) }
+	),
+
 	cwd = list(pre = function(cmd, spec, cwd = '.', ...) {
 		ncmd = sprintf('cd %s ; %s', qs(cwd), cmd);
 		spec = list(cmd = ncmd);
@@ -441,7 +480,7 @@ handleTriggers = function(o, triggerDefinition = NULL) {
 	),
 	# <i> stdout/stderr handling
 	ssh = list(pre = function(cmd, spec, ssh_host = 'localhost', ssh_source_file = NULL, ...,
-		ssh_single_quote = T) {
+		ssh_single_quote = TRUE) {
 		if (!is.null(ssh_source_file)) {
 			cmd = sprintf('%s ; %s',
 				join(paste('source', qs(ssh_source_file), sep = ' '), ' ; '), cmd);
@@ -454,11 +493,11 @@ handleTriggers = function(o, triggerDefinition = NULL) {
 		list(
 			tempfile = function(prefix, ...) {
 				Log(sprintf('tempfile ssh:%s', prefix), 1);
-				r = splitPath(tempFileName(sprintf('%s:%s', ssh_host, prefix), ...), ssh = T)$path;
+				r = splitPath(tempFileName(sprintf('%s:%s', ssh_host, prefix), ...), ssh = TRUE)$path;
 				Log(sprintf('tempfile ssh-remote:%s', r), 1);
 				r
 			},
-			readFile = function(path, ...)readFile(sprintf('%s:%s', ssh_host, path), ..., ssh = T)
+			readFile = function(path, ...)readFile(sprintf('%s:%s', ssh_host, path), ..., ssh = TRUE)
 		);
 	},
 	post = function(spec, ret, ...) { list() }
@@ -471,11 +510,11 @@ System_env__ <- new.env();
 assign(".system.doLogOnly", FALSE, envir = System_env__);
 
 System = function(cmd, logLevel = get('DefaultLogLevel', envir = Log_env__),
-	doLog = TRUE, printOnly = NULL, return.output = F,
-	pattern = NULL, patterns = NULL, ..., return.cmd = F, return.error = F) {
+	doLog = TRUE, printOnly = NULL, return.output = FALSE,
+	pattern = NULL, patterns = NULL, ..., return.cmd = FALSE, return.error = FALSE) {
 	# prepare
 	if (!exists(".system.doLogOnly", envir = System_env__))
-		assign(".system.doLogOnly", F, envir = System_env__);
+		assign(".system.doLogOnly", FALSE, envir = System_env__);
 	doLogOnly = ifelse (!is.null(printOnly), printOnly, get('.system.doLogOnly', envir = System_env__));
 
 	# pattern mapping
@@ -534,27 +573,30 @@ System = function(cmd, logLevel = get('DefaultLogLevel', envir = Log_env__),
 	r
 }
 SystemS = function(cmd, logLevel = get('DefaultLogLevel', envir = Log_env__),
-	doLog = TRUE, printOnly = NULL, return.output = F, return.cmd = F, ..., envir = parent.frame()) {
+	doLog = TRUE, printOnly = NULL, return.output = FALSE, return.cmd = FALSE, ..., envir = parent.frame()) {
 
 	cmd = Sprintf(cmd, ..., envir = envir);
 	System(cmd, logLevel, doLog, printOnly, return.output, return.cmd = return.cmd);
 }
 
+qsub_wait_function = function(r, ...) {
+	ids = if (is.list(r[[1]]) & !is.null(r[[1]]$jid)) list.kp(r, 'jid', do.unlist = TRUE) else r$jid;
+	idsS = if (length(ids) == 0) '' else paste(ids, collapse = ' ');
+	System(sprintf('qwait.pl %s', idsS), ...);
+}
+	
 # wait on job submitted by system
 .System.wait.patterns = list(
 	default = function(r, ...)(NULL),
-	qsub = function(r, ...) {
-		ids = if (is.list(r[[1]]) & !is.null(r[[1]]$jid)) list.kp(r, 'jid', do.unlist = T) else r$jid;
-		idsS = if (length(ids) == 0) '' else paste(ids, collapse = ' ');
-		System(sprintf('qwait.pl %s', idsS), ...);
-	}
+	qsub = qsub_wait_function,
+	qsub_slurm = qsub_wait_function
 );
 System.wait = function(rsystem, pattern = NULL, ...) {
 	r = if (!is.null(pattern)) .System.wait.patterns[[pattern]](rsystem, ...) else NULL;
 	r
 }
 
-System.SetDoLogOnly = function(doLogOnly = F) {
+System.SetDoLogOnly = function(doLogOnly = FALSE) {
 	assign(".system.doLogOnly", doLogOnly, envir = System_env__);
 }
 
@@ -562,14 +604,13 @@ System.SetDoLogOnly = function(doLogOnly = F) {
 #	<p> io
 #
 
-# Capture.ouput(..., type = c('input', 'output', 'merged', 'all', 'none', 'discard'), split = c('input', 'output', 'all', 'none'), append = c('input', 'output', 'all', 'none'), return = T)
-silence = function(expr, verbose = F) {
+# Capture.ouput(..., type = c('input', 'output', 'merged', 'all', 'none', 'discard'), split = c('input', 'output', 'all', 'none'), append = c('input', 'output', 'all', 'none'), return = TRUE)
+silence = function(expr, verbose = FALSE) {
 	if (verbose || Sys.info()['sysname'] == 'Windows') eval(expr) else {
 		sink('/dev/null', type = 'output');
 		sink(stdout(), type = 'message');
+		on.exit({ sink(type = 'message'); sink(type = 'output'); });
 		r = eval(expr);
-		sink(type = 'message');
-		sink(type = 'output');
 		r
 	}
 }
@@ -585,7 +626,7 @@ evalCall = function(call) {
 
 # envirArgs: non-functional, depracated
 Do.call = function(what, args, quote = FALSE, envir = parent.frame(),
-	defaultEnvir = .GlobalEnv, envirArgs = NULL, do_evaluate_args = F) {
+	defaultEnvir = .GlobalEnv, envirArgs = NULL, do_evaluate_args = FALSE) {
 	if (is.null(envir)) envir = defaultEnvir;
 	if (do_evaluate_args) args = nlapply(args, function(e)eval(args[[e]], envir = envir));
 	do.call(what = what, args = args, quote = quote, envir = envir)
@@ -605,6 +646,20 @@ SourceLocal = function(file, ...,
 	})
 }
 
+# on the fly activation of package w/o installation
+#	SourcePackage('~/src/Rprivate/Packages/plausibility/plausibility.R');
+SourcePackage = function(defFile, ...,
+	locations = c('', '.', sprintf('%s/src/Rscripts', Sys.getenv('HOME'))),
+	envir = NULL) {
+
+	dir = splitPath(defFile)$dir;
+	tmpEnv = new.env();
+	SourceLocal(defFile, locations = locations, envir = tmpEnv);
+	files = c(defFile, get('packageDefinition', tmpEnv)$files);
+
+	SourceLocal(files, locations = c(dir, locations), envir = envir);
+}
+
 
 #' Return absolute path for name searched in search-pathes
 #'
@@ -616,7 +671,8 @@ SourceLocal = function(file, ...,
 #' @param home boolean to indicate whether starting prefix '~' should be interpolated to the home folder
 #' @param as.dirs assume that prefixes are pathes, i.e. a slash will be put between path and prefix
 #' @param force enforces that path and prefix are always joined, otherwise if path is absolute no prefixing is performed
-file.locate = function(path, prefixes = NULL, normalize = T, as.dirs = T, force = F, home = T) {
+#' @return character vector with path to file or NULL if no file could be located
+file.locate = function(path, prefixes = NULL, normalize = TRUE, as.dirs = TRUE, force = FALSE, home = TRUE) {
 	if (!force && substr(path, 1, 1) == '/') return(path);
 	if (substr(path, 1, 1) == '~' && home) {
 		path = path.absolute(path, home.dir = TRUE);
@@ -640,14 +696,15 @@ file.locate = function(path, prefixes = NULL, normalize = T, as.dirs = T, force 
 #' @param normalize Standardize pathes.
 #' @param ssh Allow pathes to remote files in \code{scp} notation.
 #' @author Stefan Böhringer <r-packages@@s-boehringer.org>
-#' @keywords ~kwd1 ~kwd2
-#' @examples
-#' \dontrun{
-#'   parallel8 = function(e) log(1:e) %*% log(1:e);
-#'   cat(readFile(tempcodefile(parallel8)));
-#' }
+#' @return character vector containing the file content
+#' @keywords io input
+# #' @examples
+# #' \dontrun{
+# #'   parallel8 = function(e) log(1:e) %*% log(1:e);
+# #'   cat(readFile(tempcodefile(parallel8)));
+# #' }
 # prefixes only supported locally <!>
-readFile = function(path, prefixes = NULL, normalize = T, ssh = F) {
+readFile = function(path, prefixes = NULL, normalize = TRUE, ssh = FALSE) {
 	s = splitPath(path, ssh = ssh);
 	r = if (s$is.remote) {
 		tf = tempfile();
@@ -660,7 +717,7 @@ readFile = function(path, prefixes = NULL, normalize = T, ssh = F) {
 	r
 }
 
-writeFile = function(path, str, mkpath = F, ssh = F) {
+writeFile = function(path, str, mkpath = FALSE, ssh = FALSE) {
 	s = splitPath(path, ssh = ssh);
 	if (s$is.remote) {
 		Dir.create(sprintf('%s:%s', s$userhost, s$dir), recursive = mkpath);
@@ -671,7 +728,7 @@ writeFile = function(path, str, mkpath = F, ssh = F) {
 		File.copy(tf, path);
 	} else {
 		if (mkpath) {
-			if (!file.exists(s$dir)) dir.create(s$dir, recursive = T);
+			if (!file.exists(s$dir)) dir.create(s$dir, recursive = TRUE);
 		}
 		out = file(description = path, open = 'w', encoding='UTF-8');
 			cat(str, file = out, sep = "");
@@ -737,13 +794,6 @@ compressedConnectionPath = function(conn) {
 #	<p> print
 #
 
-fprint = function(..., file = NULL, append = F) {
-	if (!is.null(file)) sink(file = file, append = append);
-	r = print(...);
-	if (!is.null(file)) sink();
-	r
-}
-
 stdOutFromCall = function(call_) {
 	tf = tempfile();
 	sink(tf);
@@ -765,7 +815,27 @@ stdOutFromCall = function(call_) {
 # 	md5
 # }
 # same as above, less dpendencies
-md5sumString = function(s, ...)substr(SystemS('echo -n %{s}q | md5sum', return.output = T)$output, 1, 32)
+md5sumString = function(s, length = 32, ..., logLevel = 5)
+	substr(
+		SystemS('echo -n %{s}q | md5sum', return.output = TRUE, logLevel = logLevel)$output
+	, 1, min(length, 32))
+sha256sumString = function(s, length = 32, ..., logLevel = 5)
+	substr(
+		SystemS('echo -n %{s}q | sha256sum', return.output = TRUE, logLevel = logLevel)$output
+	, 1, min(length, 64))
+sha256sumPath = function(path, length = 64, ..., logLevel = 5)
+	substr(
+		SystemS('sha256sum %{path}q', return.output = TRUE, logLevel = logLevel)$output
+	, 1, min(length, 64))
+
+hashPathContent = function(path, type = 'sha256', length = 64,..., logLevel = 5) {
+	f = get(paste0(type, 'sumPath'));
+	f(path, length, ..., logLevel = logLevel)
+}
+hashStringContent = function(path, type = 'sha256', length = 64,..., logLevel = 5) {
+	f = get(paste0(type, 'sumString'));
+	f(path, length, ..., logLevel = logLevel)
+}
 
 #
 #	<p> package documentation
@@ -794,10 +864,9 @@ md5sumString = function(s, ...)substr(SystemS('echo -n %{s}q | md5sum', return.o
 clearWarnings = function()assign('last.warning', NULL, envir = baseenv())
 
 # fix broken install from dir: create tarball -> install_local
-Install_local = function(path, ...) {
+Install_local = function(path, ..., tarDir = tempdir()) {
 	sp = splitPath(path);
-	td = tempdir();
-	pkgPath = Sprintf('%{td}s/%{base}s.tgz', sp);
+	pkgPath = Sprintf('%{tarDir}s/%{base}s.tar.gz', sp);
 	# dir component is containing folder
 	System(Sprintf('cd %{dir}Q ; tar czf %{pkgPath}Q %{file}Q', sp), 2);
 	#lib = list(...)$lib;
@@ -844,7 +913,9 @@ stopS = function(str, ...)stop(Sprintf(str, ...));
 # r__: return printed values as list
 dprint = function(..., r__ = TRUE) {
 	vs = as.character(as.list(substitute(list(...)))[-1]);
-	l = listKeyValue(vs, c(...));
+	ns = names(list(...));
+	Ns = if (is.null(ns)) vs else ifelse(ns == '', vs, ns);
+	l = listKeyValue(Ns, c(...));
 	print(list2df(l));
 	if (r__) return(l);
 }
@@ -857,9 +928,29 @@ debugOn = function()options(error = recover);
 
 normalizePath = function(p) {
 	p = gsub('^~', Sys.getenv('HOME'), p);
-	p = gsub('(?:g)//', '/', p, perl = T);
+	p = gsub('(?:g)//', '/', p, perl = TRUE);
 	return(p);
 }
+
+# recursive version of gsbu
+gsubR = function(pattern, replacement, x, ..., Nmax = 1e3) {
+	for (i in 1:Nmax) {
+		xNew = gsub(pattern, replacement, x, ...);
+		if (all(xNew == x)) return(x);
+		x = xNew;
+	}
+	return(NA);	# trigger special case (consider stop) <N>
+}
+
+# <i><!> unify with normalizePath after testing 8/2020
+NormalizePath = function(p) {
+	p = gsub('^~', Sys.getenv('HOME'), p);
+	p = gsub('//+', '/', p, perl = TRUE);
+	p = gsubR('(^|/)[^/]+/[.][.]/', '/', p, perl = TRUE);
+	return(p);
+}
+pathToHome = function(path)
+	gsub(Sprintf('^%{home}s((?=/)|$)', home = Sys.getenv('HOME')), '~', path, perl = TRUE)
 
 # how to refer to to from within from
 relativePathSingle = function(from, to) {
@@ -872,16 +963,34 @@ relativePathSingle = function(from, to) {
 }
 relativePath = Vectorize(relativePathSingle, c('from', 'to'));
 SplitPath = function(path, ...)lapply(path, splitPath, ...);
+absolutePathSingle = function(path)splitPath(path)$absolute
+absolutePath = Vectorize(absolutePathSingle, c('path'));
+pathSimplify = function(p)gsub('[:]', '_', p)
+pathInsertPostfix = function(path, postfix, sep = '-')
+	Sprintf('%{fullbase}s%{sep}s%{postfix}s.%{ext}s', splitPath(path))
 
-createZip = function(input, output, pword, doCopy = F) {
+# keys of input-list are folder names, use folderstring in key to create subfolders
+# 	createZip(list(results = c('r/ref1.html', 'r/ref2.html')), 'r/myZip.zip', doCopy = TRUE);
+# 	createZip(list(`results::sub` = c('r/ref1.html', 'r/ref2.html')), 'r/myZip.zip', doCopy = TRUE);
+#	values are slash-dependend dest = 'source' copies into dest/source; dest = source/, copies into dest
+
+createZip = function(input, output, pword, doCopy = FALSE, readmeText, readme, logOnly = FALSE,
+	absoluteSymlink = FALSE, simplifyFileNames = FALSE, folderString = '::') {
 	destDir = splitPath(output)$fullbase;
 	Dir.create(destDir);
+	if (!missing(readmeText)) writeFile(Sprintf('%{destDir}s/README'), readmeText);
 	nelapply(input, function(n, e) {
+		if (notE(folderString)) n = gsub(folderString, '/', n);
 		subdir = join(c(destDir, n, ''), '/');
 		Dir.create(subdir);
-		to = paste(subdir, list.kpu(SplitPath(e), 'file'), sep = '/');
-		if (doCopy) file.copy(e, to) else {
-			from = relativePath(subdir, e);
+		toFiles = list.kpu(SplitPath(e), 'file');
+		if (simplifyFileNames) toFiles = sapply(toFiles, pathSimplify);
+		to = paste(subdir, toFiles, sep = '/');
+		LogS(4, 'Copy: %{e}s --> %{to}s');
+		if (doCopy) file.copy(e, to, recursive = TRUE) else {
+			#from = relativePath(subdir, e);
+			from = absolutePath(e);
+			if (absoluteSymlink) from = NormalizePath(paste(splitPath(subdir)$absolute, from, sep = '/'));
 			print(list(from = from, to = to));
 			file.symlink(from, to);
 		}
@@ -890,5 +999,5 @@ createZip = function(input, output, pword, doCopy = F) {
 	zip = splitPath(output)$base;
 	options = '';
 	if (!missing(pword)) options = Sprintf('%{options}s -P %{pword}q');
-	SystemS('cd %{dir}q ; zip %{options}s -r %{zip}q.zip %{zip}q', logLevel = 1);
+	SystemS('cd %{dir}q ; zip %{options}s -r %{zip}q.zip %{zip}q', logLevel = 1, printOnly = logOnly);
 }
