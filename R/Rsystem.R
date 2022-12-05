@@ -429,6 +429,11 @@ handleTriggers = function(o, triggerDefinition = NULL) {
 # 		cwd = sp$path, ssh_host = sp$userhost,
 # 		qsubPath = sprintf('%s/qsub', sp$path), qsubMemory = self@config$qsubRampUpMemory);
 
+.systemSeps = list(Linux = ';', Window = '@');
+JoinCmds = function(cmds, system = Sys.info()['sysname']) {
+	sep = Sprintf(' %{sep}s ', sep = .systemSeps[[ system ]]);
+	return(join(cmds, sep));
+}
 
 .System.fileSystem = list(
 	#tempfile = function(prefix, ...)tempfile(splitPath(prefix)$base, tmpdir = splitPath(prefix)$dir, ...),
@@ -472,7 +477,7 @@ handleTriggers = function(o, triggerDefinition = NULL) {
 	),
 
 	cwd = list(pre = function(cmd, spec, cwd = '.', ...) {
-		ncmd = sprintf('cd %s ; %s', qs(cwd), cmd);
+		ncmd = JoinCmds(c(Sprintf('cd %{cwd}q'), cmd));
 		spec = list(cmd = ncmd);
 		spec
 	},
@@ -482,8 +487,9 @@ handleTriggers = function(o, triggerDefinition = NULL) {
 	ssh = list(pre = function(cmd, spec, ssh_host = 'localhost', ssh_source_file = NULL, ...,
 		ssh_single_quote = TRUE) {
 		if (!is.null(ssh_source_file)) {
-			cmd = sprintf('%s ; %s',
-				join(paste('source', qs(ssh_source_file), sep = ' '), ' ; '), cmd);
+			#cmd = sprintf('%s ; %s',
+			#	join(paste('source', qs(ssh_source_file), sep = ' '), ' ; '), cmd);
+			cmd = JoinCmds(c(paste('source', qs(ssh_source_file), sep = ' '), cmd))
 		}
 		fmt = if (ssh_single_quote) 'ssh %{ssh_host}s %{cmd}q' else 'ssh %{ssh_host}s %{cmd}Q';
 		spec = list(cmd = Sprintf(fmt));
