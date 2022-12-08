@@ -20,7 +20,7 @@ packageDefinition = list(
 		suggests = c('testme', 'jsonlite', 'yaml', 'knitr'),
 		enhances = c(),
 		systemrequirements = c(),
-		news = "0.11-1	Removed shell constructs in system calls\n0.11-0	Windows support\n0.10-0	Support for enhances, SystemRequirements in NAMESPACE\n0.9-0	Finished vignette. Clean test. RC1\n0.8-1	Bug fix automatic dependency addition.\n0.8-0	Vignette building finished. Project vignette in progress.\n0.7-0	Vignette building. Started vignette for package `package`\n0.6-0	Clean CRAN check\n0.5-1	Resolved documentation\n0.5-0	Error free CRAN check. Warnings left.\n0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
+		news = "0.11-2	Bug fix\n0.11-1	Removed shell constructs in system calls\n0.11-0	Windows support\n0.10-0	Support for enhances, SystemRequirements in NAMESPACE\n0.9-0	Finished vignette. Clean test. RC1\n0.8-1	Bug fix automatic dependency addition.\n0.8-0	Vignette building finished. Project vignette in progress.\n0.7-0	Vignette building. Started vignette for package `package`\n0.6-0	Clean CRAN check\n0.5-1	Resolved documentation\n0.5-0	Error free CRAN check. Warnings left.\n0.4-4	bugfix NAMESPACE generation\n0.4-3	`createPackage` fully documented.\n0.4-2	More documentation\n0.4-1	Bug fix NEWS file\n0.4-0	Self-contained example\n0.3-1	bug fix for missing files\n0.3-0	Beta, self-contained\n0.2-0	Alpha version\n0.1-0	Initial release",
 		license = 'LGPL-2',
 		vignettes = "vignettes/vignette-package.Rmd"
 	),
