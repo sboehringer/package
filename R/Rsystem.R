@@ -875,7 +875,8 @@ Install_local = function(path, ..., tarDir = tempdir()) {
 	pkgPath = Sprintf('%{tarDir}s/%{base}s.tar.gz', sp);
 	# dir component is containing folder
 	#System(Sprintf('cd %{dir}Q ; tar czf %{pkgPath}Q %{file}Q', sp), 2);
-	tar(pkgPath, path, compression = 'gzip');
+	LogS(2, 'Creating archive: %{pkgPath}s from: %{file}s in dir %{dir}s', sp);
+	exprInDir(sp$dir, tar(pkgPath, sp$file, compression = 'gzip'));
 	#lib = list(...)$lib;
 	#libLocation = if (is.null(lib)) 'default location' else lib;
 	#LogS(4, 'Installing to lib:%{libLocation}s');
