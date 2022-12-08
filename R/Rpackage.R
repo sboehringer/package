@@ -332,7 +332,8 @@ checkPackage = function(packageDesc, packagesDir, asCran = TRUE, copyCranTarball
 		# 		SystemS('%{cmdGit}s | ( %{cmdTar}s )', 2);
 		fArchive = tempfile();
 		SystemS('git archive --format tar HEAD -o %{fArchive}q', 2, wd = packageDir);
-		SystemS('tar xf %{fArchive}q --overwrite', 2, wd = checkDir);
+		#SystemS('tar xf %{fArchive}q --overwrite', 2, wd = checkDir);
+		untar(fArchive, exdir = checkDir, extras = '--overwrite');
 	}
 	cran = if (asCran) '--as-cran' else '';
 	# 	SystemS(JoinCmds(c(
