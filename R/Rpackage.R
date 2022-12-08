@@ -103,30 +103,32 @@ gitActions = function(o, packagesDir, debug, gitOptions = gitOptionsDefault) {
 	gitOptions = merge.lists(gitOptionsDefault, gitOptions);
 	i = packageInterpolationDict(o, debug);
 	pdir = Sprintf('%{packagesDir}s/%{name}s', o);
-	if (gitOptions$doPull) System(Sprintf('cd %{pdir}q ; git pull'), 2);
+	if (gitOptions$doPull) System('git pull', 2, wd = pdir);
 
 	readme = packageInterpolateVars(o, firstDef(o$git$readmeTemplate, packageReadmeTemplate));
 	writeFile(Sprintf('%{pdir}s/README.md'), readme);
 	# initialize git
 	if (!file.exists(with(o, Sprintf('%{packagesDir}s/%{name}s/.git')))) {
-		System(Sprintf('cd %{pdir}q ; git init'), 2);
+		System('git init', 2, wd = pdir);
 	}
-	System(Sprintf('cd %{pdir}q ; git add --all'), 2);
-	System(with(i, Sprintf('cd %{pdir}q ; git commit -a -m "Commit for onward development of version %{VERSION}s"')), 2);
-	tags = System(Sprintf('cd %{pdir}q ; git tag'), 2, return.output = T)$output;
+	System('git add --all', 2, wd = pdir);
+	System(with(i, Sprintf('git commit -a -m "Commit for onward development of version %{VERSION}s"')), 2, wd = pdir);
+	tags = System('git tag', 2, wd = pdir, return.output = T)$output;
 	# tag new version
 	newVersion = F;
 	if (length(Regexpr(Sprintf('\\Q%{VERSION}s\\E', i), tags)[[1]]) == 0) {
-		System(with(i, Sprintf('cd %{pdir}q ; git tag %{VERSION}s')));
+		System(with(i, Sprintf('git tag %{VERSION}s')), wd = pdir);
 		newVersion = T;
 	}
 	# remote
 	if (notE(o$git$remote)) {
-		remotes = System(Sprintf('cd %{pdir}q ; git remote -v'), 2, return.output = T)$output;
+		remotes = System('git remote -v', 2, wd = pdir, return.output = T)$output;
 		if (remotes == '' && o$git$remote != '')
-			System(Sprintf('cd %{pdir}q ; git remote add origin %{remote}s', o$git), 2);
-		if (o$git$pushOnNewVersion && newVersion || gitOptions$doPush)
-			System(Sprintf('cd %{pdir}q ; git push -u origin master ; git push origin %{VERSION}s', i), 2);
+			System(Sprintf('git remote add origin %{remote}s', o$git), 2, wd = pdir);
+		if (o$git$pushOnNewVersion && newVersion || gitOptions$doPush) {
+			System('git push -u origin master', 2, wd = pdir);
+			System(Sprintf('git push origin %{VERSION}s', i), 2, wd = pdir);
+		}
 	}
 }
 
@@ -325,16 +327,21 @@ checkPackage = function(packageDesc, packagesDir, asCran = TRUE, copyCranTarball
 		#SystemS('cd %{packageDir}q ; git archive --format tar HEAD | ( cd %{checkDir}q ; tar xf - --exclude inst/doc --overwrite )', 2);
 		#SystemS('cd %{packageDir}q ; git archive --format tar HEAD | ( cd %{checkDir}q ; tar xf - --overwrite )', 2);
 		#SystemS('cd %{packageDir}q ; git archive --format tar HEAD | ( cd %{checkDir}q ; tar xf - --overwrite )', 2);
-		cmdGit = JoinCmds(Sprintf(c('cd %{packageDir}q', 'git archive --format tar HEAD')));
-		cmdTar = JoinCmds(Sprintf(c('cd %{checkDir}q', 'tar xf - --overwrite')));
-		SystemS('%{cmdGit}s | ( %{cmdTar}s )', 2);
+		# 		cmdGit = JoinCmds(Sprintf(c('cd %{packageDir}q', 'git archive --format tar HEAD')));
+		# 		cmdTar = JoinCmds(Sprintf(c('cd %{checkDir}q', 'tar xf - --overwrite')));
+		# 		SystemS('%{cmdGit}s | ( %{cmdTar}s )', 2);
+		fArchive = tempfile();
+		SystemS('git archive --format tar HEAD -o %{fArchive}q', 2, wd = packageDir);
+		SystemS('tar xf %{fArchive}q --overwrite', 2, wd = checkDir);
 	}
 	cran = if (asCran) '--as-cran' else '';
-	SystemS(JoinCmds(c(
-		'cd %{packagesDir}q',
-		'R CMD build %{name}q',
-		'R CMD check %{cran}s %{name}q_%{version}s.tar.gz'
-	)), 2);
+	# 	SystemS(JoinCmds(c(
+	# 		'cd %{packagesDir}q',
+	# 		'R CMD build %{name}q',
+	# 		'R CMD check %{cran}s %{name}q_%{version}s.tar.gz'
+	# 	)), 2);
+	SystemS('R CMD build %{name}q', 2, wd = packagesDir);
+	SystemS('R CMD check %{cran}s %{name}q_%{version}s.tar.gz', 2, wd = packagesDir);
 	if (asCran && copyCranTarball) {
 		from = Sprintf('%{packagesDir}s/%{name}q_%{version}s.tar.gz');
 		to = Sprintf('%{packagesDirPrev}s/%{name}q_%{version}s-cran.tar.gz');

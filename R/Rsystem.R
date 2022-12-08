@@ -429,7 +429,7 @@ handleTriggers = function(o, triggerDefinition = NULL) {
 # 		cwd = sp$path, ssh_host = sp$userhost,
 # 		qsubPath = sprintf('%s/qsub', sp$path), qsubMemory = self@config$qsubRampUpMemory);
 
-.systemSeps = list(Linux = ';', Window = '@');
+.systemSeps = list(Linux = ';', Windows = '&');
 JoinCmds = function(cmds, system = Sys.info()['sysname']) {
 	sep = Sprintf(' %{sep}s ', sep = .systemSeps[[ system ]]);
 	return(join(cmds, sep));
@@ -517,7 +517,7 @@ assign(".system.doLogOnly", FALSE, envir = System_env__);
 
 System = function(cmd, logLevel = get('DefaultLogLevel', envir = Log_env__),
 	doLog = TRUE, printOnly = NULL, return.output = FALSE,
-	pattern = NULL, patterns = NULL, ..., return.cmd = FALSE, return.error = FALSE) {
+	pattern = NULL, patterns = NULL, ..., return.cmd = FALSE, return.error = FALSE, wd = NULL) {
 	# prepare
 	if (!exists(".system.doLogOnly", envir = System_env__))
 		assign(".system.doLogOnly", FALSE, envir = System_env__);
@@ -556,7 +556,7 @@ System = function(cmd, logLevel = get('DefaultLogLevel', envir = Log_env__),
 	if (doLog){ Log(sprintf("system: %s", cmd), logLevel); }
 	# system call
 	ret = NULL;
-	if (!doLogOnly) ret = system(cmd);
+	if (!doLogOnly) ret = if (notE(wd)) exprInDir(system(cmd), wd) else system(cmd);
 	# return value
 	r = list(error = ret);
 	if (return.output & !doLogOnly) {
@@ -579,10 +579,10 @@ System = function(cmd, logLevel = get('DefaultLogLevel', envir = Log_env__),
 	r
 }
 SystemS = function(cmd, logLevel = get('DefaultLogLevel', envir = Log_env__),
-	doLog = TRUE, printOnly = NULL, return.output = FALSE, return.cmd = FALSE, ..., envir = parent.frame()) {
+	doLog = TRUE, printOnly = NULL, return.output = FALSE, return.cmd = FALSE, ..., envir = parent.frame(), wd = NULL) {
 
 	cmd = Sprintf(cmd, ..., envir = envir);
-	System(cmd, logLevel, doLog, printOnly, return.output, return.cmd = return.cmd);
+	System(cmd, logLevel, doLog, printOnly, return.output, return.cmd = return.cmd, wd = wd);
 }
 
 qsub_wait_function = function(r, ...) {
