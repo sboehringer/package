@@ -14,9 +14,9 @@ Loading required package: usethis
 Registered S3 method overwritten by 'testthat':
   method           from   
   print.comparison compare
-R Thu Dec  8 11:13:41 2022: Copying files: /home/pingu/lib64/R-4.1.1/library/package/Rscripts/pkg-minimal.R -> ~/src/Rpackages/pkg.minimal/R/
+R Thu Dec  8 11:15:30 2022: Copying files: /home/pingu/lib64/R-4.1.1/library/package/Rscripts/pkg-minimal.R -> ~/src/Rpackages/pkg.minimal/R/
 
-R Thu Dec  8 11:13:41 2022: Copy "/home/pingu/lib64/R-4.1.1/library/package/Rscripts/pkg-minimal.R --> /home/pingu/src/Rpackages/pkg.minimal/R/
+R Thu Dec  8 11:15:30 2022: Copy "/home/pingu/lib64/R-4.1.1/library/package/Rscripts/pkg-minimal.R --> /home/pingu/src/Rpackages/pkg.minimal/R/
 
 Updating roxygen version in /home/pingu/src/Rpackages/pkg.minimal/DESCRIPTION
 ℹ Loading pkg.minimal
