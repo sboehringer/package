@@ -312,6 +312,7 @@ probeDefinition = function(desc, dir = NULL) {
 	return(o);
 }
 
+packageTarOSOptions = list(Linux = '--overwrite', Windows = c());
 checkPackage = function(packageDesc, packagesDir, asCran = TRUE, copyCranTarball = TRUE, clean = TRUE)
 	with (packageDesc, {
 	checkDir = packageDir = Sprintf("%{packagesDir}s/%{name}s");
@@ -333,7 +334,7 @@ checkPackage = function(packageDesc, packagesDir, asCran = TRUE, copyCranTarball
 		fArchive = tempfile();
 		SystemS('git archive --format tar HEAD -o %{fArchive}q', 2, wd = packageDir);
 		#SystemS('tar xf %{fArchive}q --overwrite', 2, wd = checkDir);
-		untar(fArchive, exdir = checkDir, extras = '--overwrite');
+		untar(fArchive, exdir = checkDir, extras = packageTarOSOptions[[ Sys.info()['sysname'] ]]);
 	}
 	cran = if (asCran) '--as-cran' else '';
 	# 	SystemS(JoinCmds(c(
