@@ -313,11 +313,11 @@ probeDefinition = function(desc, dir = NULL) {
 }
 
 packageTarOSOptions = list(Linux = '--overwrite', Windows = c());
-checkPackage = function(packageDesc, packagesDir, asCran = TRUE, copyCranTarball = TRUE, clean = TRUE)
+checkPackage = function(packageDesc, packagesDir, asCran = TRUE, copyCranTarball = TRUE, clean = TRUE, noGit = FALSE)
 	with (packageDesc, {
 	checkDir = packageDir = Sprintf("%{packagesDir}s/%{name}s");
 	packagesDirPrev = packagesDir;
-	if (file.exists(Sprintf("%{packageDir}s/.git"))) {
+	if (!noGit && file.exists(Sprintf("%{packageDir}s/.git"))) {
 		packagesDir = tempdir();
 		checkDir = Sprintf('%{packagesDir}s/%{name}s');
 		# <i> move if exists
@@ -449,7 +449,7 @@ createPackage = function(packageDesc, packagesDir = '~/src/Rpackages',
 		gitOptions = gitOptions, noGit = noGit,
 		lib = lib, asCran = asCran
 	);
-	if (doCheck) checkPackage(packageDef, packagesDir, asCran);
+	if (doCheck) checkPackage(packageDef, packagesDir, asCran, noGit = noGit);
 	return(r);
 }
 
